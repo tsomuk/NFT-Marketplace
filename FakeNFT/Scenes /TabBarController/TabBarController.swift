@@ -44,6 +44,7 @@ final class TabBarController: UITabBarController {
  
     private func configureTabs() {
         let profileController = ProfileViewController()
+        let profileNC = UINavigationController(rootViewController: profileController)
         let catalogController = TestCatalogViewController(
             servicesAssembly: servicesAssembly
         )
@@ -53,6 +54,6 @@ final class TabBarController: UITabBarController {
         catalogController.tabBarItem = catalogTabBarItem
         cartController.tabBarItem = cartTabBarItem
         statisticsController.tabBarItem = statisticsTabBarItem
-        viewControllers = [profileController, catalogController, cartController, statisticsController]
+        viewControllers = [profileNC, catalogController, cartController, statisticsController]
     }
 }
