@@ -48,7 +48,9 @@ final class TabBarController: UITabBarController {
             servicesAssembly: servicesAssembly
         )
         let cartController = CartViewController()
-        let statisticsController = StatisticsViewController()
+        let statisticsController =  UINavigationController(
+            rootViewController: StatisticsViewController()
+        )
         profileController.tabBarItem = profileTabBarItem
         catalogController.tabBarItem = catalogTabBarItem
         cartController.tabBarItem = cartTabBarItem
