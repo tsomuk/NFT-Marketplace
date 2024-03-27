@@ -17,6 +17,7 @@ class StatisticsViewController: UIViewController {
         table.dataSource = self
         table.separatorStyle = .none
         table.allowsSelection = false
+        table.showsVerticalScrollIndicator = false
         
         return table
     }()
@@ -26,11 +27,14 @@ class StatisticsViewController: UIViewController {
         setView()
         setNavItem()
     }
-    
+}
+
+private extension StatisticsViewController {
     func setNavItem() {
         let button = UIButton(type: .system)
         button.tintColor = .black
         button.setImage(UIImage(named: "sort"), for: .normal)
+        button.addTarget(self, action: #selector(sortAction), for: .touchUpInside)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: button)
     }
@@ -45,14 +49,31 @@ class StatisticsViewController: UIViewController {
             make.bottom.equalToSuperview().inset(83)
             make.top.equalToSuperview().inset(88)
         }
-        
+    }
+    
+     @objc func sortAction() {
+         let alert = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
+         
+         let nameSort = UIAlertAction(title: "По имени", style: .default) { _ in
+             print("Sort NAME")
+         }
+         let ratingSort = UIAlertAction(title: "По рейтингу", style: .default) { _ in
+             print("Sort RATING")
+         }
+         
+         let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel)
+         
+         alert.addAction(nameSort)
+         alert.addAction(ratingSort)
+         alert.addAction(cancelAction)
+         
+         self.present(alert, animated: true, completion: nil)
     }
 }
 
-
 extension StatisticsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        1
+        10
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -65,5 +86,7 @@ extension StatisticsViewController: UITableViewDataSource {
 }
 
 extension StatisticsViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return  96
+    }
 }
