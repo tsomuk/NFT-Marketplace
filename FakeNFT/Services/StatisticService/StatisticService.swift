@@ -8,15 +8,16 @@
 import Foundation
 
 protocol StatisticService {
-    func fetchUsersNextPage() 
+    func fetchUsersNextPage()
 }
 
 final class StatisticServiceImpl: StatisticService {
     static let didChangeNotification = Notification.Name(rawValue: "StatisticServiceDidChange")
+    private  let usersRequest = UsersRequest(id: "users")
+    private  let session = URLSession.shared
+
     private var lastLoadedPage: Int? = nil
     private var prevTask: URLSessionTask?
-    private  let nftRequest = NFTRequest(id: "users")
-    private  let session = URLSession.shared
     private(set) var users = [User]()
     
     func fetchUsersNextPage() {
@@ -26,8 +27,8 @@ final class StatisticServiceImpl: StatisticService {
         let nextPage = lastLoadedPage == nil ? 0 : lastLoadedPage! + 1
         lastLoadedPage = nextPage
         
-        guard let urlNftRequest = nftRequest.endpoint,
-              var components = URLComponents(url: urlNftRequest, resolvingAgainstBaseURL: true)
+        guard let urlUsersRequest = usersRequest.endpoint,
+              var components = URLComponents(url: urlUsersRequest, resolvingAgainstBaseURL: true)
         else { return }
         
         components.queryItems = [
@@ -52,11 +53,13 @@ final class StatisticServiceImpl: StatisticService {
             
             switch result {
             case .success(let users):
-                self.users += users
-                NotificationCenter.default.post(name: StatisticServiceImpl.didChangeNotification,
-                                                object: self,
-                                                userInfo: nil)
-           
+                if !users.isEmpty {
+                    self.users += users
+                    NotificationCenter.default.post(name: StatisticServiceImpl.didChangeNotification,
+                                                    object: self,
+                                                    userInfo: nil)
+                }
+                
             case .failure(let error):
                 print(error)
             }

@@ -51,6 +51,7 @@
 		8711E53F2BB444300061ABBA /* helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8711E53E2BB444300061ABBA /* helpers.swift */; };
 		8721FBF32BB30F2D001EE7FC /* ColorsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8721FBF22BB30F2D001EE7FC /* ColorsApp.swift */; };
 		875E75D12BB307AD005D11A9 /* RatingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875E75D02BB307AD005D11A9 /* RatingCell.swift */; };
+		87611C632BB554A100BAF322 /* UsersRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87611C622BB554A100BAF322 /* UsersRequest.swift */; };
 		E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19CD5AA2A98B56600CA39A5 /* NftImageCollectionViewCell.swift */; };
 		E1A1B9DA2AA01CE400C3AFBC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A1B9D92AA01CE400C3AFBC /* TabBarController.swift */; };
 		E1CD40DC2A96BECC00BE7FE8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E1CD40DB2A96BECC00BE7FE8 /* Localizable.strings */; };
@@ -118,6 +119,7 @@
 		8711E53E2BB444300061ABBA /* helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = helpers.swift; sourceTree = "<group>"; };
 		8721FBF22BB30F2D001EE7FC /* ColorsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsApp.swift; sourceTree = "<group>"; };
 		875E75D02BB307AD005D11A9 /* RatingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingCell.swift; sourceTree = "<group>"; };
+		87611C622BB554A100BAF322 /* UsersRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersRequest.swift; sourceTree = "<group>"; };
 		E19CD5AA2A98B56600CA39A5 /* NftImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		E1A1B9D92AA01CE400C3AFBC /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		E1CD40D92A96BE7D00BE7FE8 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -375,6 +377,7 @@
 				3FC8C39029D2453B0081F015 /* ExampleRequest.swift */,
 				0C79EE602A76DCD600EE90EA /* NftByIdRequest.swift */,
 				0C79EE622A76DD1900EE90EA /* RequestConstants.swift */,
+				87611C622BB554A100BAF322 /* UsersRequest.swift */,
 			);
 			path = Requests;
 			sourceTree = "<group>";
@@ -604,6 +607,7 @@
 				3FC8C39129D2453B0081F015 /* ExampleRequest.swift in Sources */,
 				0CFCB7462A78064B0009A829 /* NftDetailCellModel.swift in Sources */,
 				8711E53D2BB43DED0061ABBA /* User.swift in Sources */,
+				87611C632BB554A100BAF322 /* UsersRequest.swift in Sources */,
 				0CFCB74B2A780EA80009A829 /* UIView+Constraints.swift in Sources */,
 				3F6806D729CBC50A00B4F915 /* CellsReusingUtils.swift in Sources */,
 				0C79EE612A76DCD600EE90EA /* NftByIdRequest.swift in Sources */,

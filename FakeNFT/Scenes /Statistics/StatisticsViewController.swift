@@ -138,7 +138,6 @@ extension StatisticsViewController: UITableViewDataSource {
             guard let self = self else { return }
             
             switch res {
-                
             case .success(_):
                 self.tableView.reloadRows(at: [indexPath], with: .automatic)
             case .failure(_):
