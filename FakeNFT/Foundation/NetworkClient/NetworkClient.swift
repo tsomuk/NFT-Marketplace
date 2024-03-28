@@ -9,29 +9,37 @@ enum NetworkClientError: Error {
 
 protocol NetworkClient {
     @discardableResult
-    func send(request: NetworkRequest,
-              completionQueue: DispatchQueue,
-              onResponse: @escaping (Result<Data, Error>) -> Void) -> NetworkTask?
+    func send(
+        request: NetworkRequest,
+        completionQueue: DispatchQueue,
+        onResponse: @escaping (Result<Data, Error>) -> Void
+    ) -> NetworkTask?
 
     @discardableResult
-    func send<T: Decodable>(request: NetworkRequest,
-                            type: T.Type,
-                            completionQueue: DispatchQueue,
-                            onResponse: @escaping (Result<T, Error>) -> Void) -> NetworkTask?
+    func send<T: Decodable>(
+        request: NetworkRequest,
+        type: T.Type,
+        completionQueue: DispatchQueue,
+        onResponse: @escaping (Result<T, Error>) -> Void
+    ) -> NetworkTask?
 }
 
 extension NetworkClient {
 
     @discardableResult
-    func send(request: NetworkRequest,
-              onResponse: @escaping (Result<Data, Error>) -> Void) -> NetworkTask? {
+    func send(
+        request: NetworkRequest,
+        onResponse: @escaping (Result<Data, Error>) -> Void
+    ) -> NetworkTask? {
         send(request: request, completionQueue: .main, onResponse: onResponse)
     }
 
     @discardableResult
-    func send<T: Decodable>(request: NetworkRequest,
-                            type: T.Type,
-                            onResponse: @escaping (Result<T, Error>) -> Void) -> NetworkTask? {
+    func send<T: Decodable>(
+        request: NetworkRequest,
+        type: T.Type,
+        onResponse: @escaping (Result<T, Error>) -> Void
+    ) -> NetworkTask? {
         send(request: request, type: type, completionQueue: .main, onResponse: onResponse)
     }
 }
@@ -97,7 +105,7 @@ struct DefaultNetworkClient: NetworkClient {
         completionQueue: DispatchQueue,
         onResponse: @escaping (Result<T, Error>) -> Void
     ) -> NetworkTask? {
-        return send(request: request, completionQueue: completionQueue) { result in
+        send(request: request, completionQueue: completionQueue) { result in
             switch result {
             case let .success(data):
                 self.parse(data: data, type: type, onResponse: onResponse)
@@ -117,17 +125,25 @@ struct DefaultNetworkClient: NetworkClient {
 
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.addValue(
+            "b351241e-2dec-4598-9abd-083d84e52843",
+            forHTTPHeaderField: "X-Practicum-Mobile-Token"
+        )
 
         if let dto = request.dto,
            let dtoEncoded = try? encoder.encode(dto) {
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = dtoEncoded
         }
 
         return urlRequest
     }
 
-    private func parse<T: Decodable>(data: Data, type _: T.Type, onResponse: @escaping (Result<T, Error>) -> Void) {
+    private func parse<T: Decodable>(
+        data: Data,
+        type _: T.Type,
+        onResponse: @escaping (Result<T, Error>) -> Void
+    ) {
         do {
             let response = try decoder.decode(T.self, from: data)
             onResponse(.success(response))
