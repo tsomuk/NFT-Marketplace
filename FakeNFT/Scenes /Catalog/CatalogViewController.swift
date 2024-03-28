@@ -40,7 +40,7 @@ final class CatalogViewController: UIViewController {
         }
     }
 
-    func loadCollection() {
+    private func loadCollection() {
         ProgressHUD.show()
         let request = CatalogRequest()
         let networkService = DefaultNetworkClient()
@@ -81,15 +81,13 @@ extension CatalogViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: "CatalogCell",
-            for: indexPath
-        ) as? CatalogTableViewCell else {
+            withIdentifier: "CatalogCell", for: indexPath
+        ) as? CatalogTableViewCell,
+        let urlString = allCollections[indexPath.row].cover.addingPercentEncoding(
+            withAllowedCharacters: .urlQueryAllowed
+        ) else {
             return UITableViewCell()
         }
-
-        guard let urlString = allCollections[indexPath.row].cover.addingPercentEncoding(
-            withAllowedCharacters: .urlQueryAllowed
-        ) else { return cell }
 
         cell.configure(
             imageURL: URL(string: urlString),
