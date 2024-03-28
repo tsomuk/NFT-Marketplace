@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 final class RatingCell: UITableViewCell {
     static let identifier = "RatingCell"
@@ -30,7 +31,7 @@ final class RatingCell: UITableViewCell {
     lazy var avatarImageView: UIImageView = {
         let image = UIImage(named: "profile")
         let imageView = UIImageView(image: image)
-        
+        imageView.clipsToBounds = true
         imageView.layer.cornerRadius = imageView.bounds.height / 2
         
         return imageView
@@ -48,6 +49,7 @@ final class RatingCell: UITableViewCell {
         let label = UILabel()
         label.text = "112"
         label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        label.textAlignment = .right
         
         return label
     }()
@@ -60,6 +62,16 @@ final class RatingCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func config(
+        countUsers: Int,
+        name: String,
+        rating: String
+    ) {
+        numberRatingLabel.text = "\(countUsers)"
+        nameLabel.text = name
+        ratingLabel.text = rating
     }
     
     func setConstraints() {
