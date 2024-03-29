@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 import Kingfisher
+import ProgressHUD
 
 protocol ProfileEditDelegate: AnyObject {
     func editProfileVCDismissed(_ vc: EditProfileViewController)
@@ -24,6 +25,10 @@ final class EditProfileViewController: UIViewController {
     private var profileInfo: ProfileInfo?
     private var newProfileInfo: ProfileInfo?
     weak var delegate: ProfileEditDelegate?
+    
+    private let shimmerLoaderViewName = ShimmerLoaderView()
+    private let shimmerLoaderViewBio = ShimmerLoaderView()
+    private let shimmerLoaderViewSite = ShimmerLoaderView()
 
     private lazy var closeEditVCButton: UIButton = {
         let button = UIButton(type: .system)
@@ -205,6 +210,7 @@ final class EditProfileViewController: UIViewController {
 
         view.backgroundColor = .systemBackground
         setUpView()
+        setUpAnimation()
         fetchProfileInfoForEdit()
     }
 
@@ -253,6 +259,41 @@ final class EditProfileViewController: UIViewController {
         downloadNewImageField.isHidden = true
     }
 
+    private func setUpAnimation() {
+        view.addSubview(shimmerLoaderViewName)
+        view.addSubview(shimmerLoaderViewBio)
+        view.addSubview(shimmerLoaderViewSite)
+
+        shimmerLoaderViewName.snp.makeConstraints { make in
+            make.top.equalTo(nameLabel.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(44)
+        }
+        shimmerLoaderViewBio.snp.makeConstraints { make in
+            make.top.equalTo(bioLabel.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(132)
+        }
+        shimmerLoaderViewSite.snp.makeConstraints { make in
+            make.top.equalTo(siteLabel.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(44)
+        }
+
+        shimmerLoaderViewName.startShimmeringEffect()
+        shimmerLoaderViewBio.startShimmeringEffect()
+        shimmerLoaderViewSite.startShimmeringEffect()
+    }
+
+    private func stopAnimation() {
+        shimmerLoaderViewName.stopShimmeringEffect()
+        shimmerLoaderViewBio.stopShimmeringEffect()
+        shimmerLoaderViewSite.stopShimmeringEffect()
+        shimmerLoaderViewName.removeFromSuperview()
+        shimmerLoaderViewBio.removeFromSuperview()
+        shimmerLoaderViewSite.removeFromSuperview()
+    }
+    
     private func fetchProfileInfoForEdit() {
         networkClient.send(
             request: profileRequest,
@@ -263,11 +304,20 @@ final class EditProfileViewController: UIViewController {
                 DispatchQueue.main.async { [weak self] in
                     self?.profileInfo = profileInfo
                     self?.convert(with: profileInfo)
+                    self?.stopAnimation()
                   }
             case .failure(let error):
                 print("Failed to fetch profile info: \(error.localizedDescription)")
+                self.stopAnimation()
             }
         }
+    }
+    
+    private func setUpProgressHUD() {
+        ProgressHUD.animationType = .circleStrokeSpin
+        ProgressHUD.colorBackground = .clear
+        ProgressHUD.colorAnimation = UIColor(named: "nftBlack") ?? .black
+        ProgressHUD.colorProgress = UIColor(named: "nftLightGray") ?? .lightGray
     }
 
     private func convert(with profile: ProfileInfo) {
@@ -314,9 +364,13 @@ final class EditProfileViewController: UIViewController {
     }
 
     private func updateNewProfileData() {
+        setUpProgressHUD()
+        ProgressHUD.show()
+        
         guard let profileInfo = profileInfo
         else {
             print("Profile data is nil")
+            ProgressHUD.dismiss()
             return
         }
 
@@ -325,6 +379,7 @@ final class EditProfileViewController: UIViewController {
         guard let newProfileInfo = newProfileInfo
         else {
             print("New profile data is nil")
+            ProgressHUD.dismiss()
             return
         }
 
@@ -338,10 +393,12 @@ final class EditProfileViewController: UIViewController {
             case .success(let updatedProfileInfo):
                 DispatchQueue.main.async {
                     print("Profile successfully updated:", updatedProfileInfo)
+                    ProgressHUD.dismiss()
                     self.delegate?.editProfileVCDismissed(self)
                 }
             case .failure(let error):
                 print("Failed to update profile:", error.localizedDescription)
+                ProgressHUD.dismiss()
                 self.delegate?.editProfileVCDismissed(self)
             }
         }

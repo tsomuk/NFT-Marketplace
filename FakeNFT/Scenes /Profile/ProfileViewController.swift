@@ -19,6 +19,9 @@ final class ProfileViewController: UIViewController {
     private var numberOfMyNFT = 0
     private var numberOfChosenNFT = 0
     private var profileInfo: ProfileInfo?
+    
+    private let shimmerLoaderViewName = ShimmerLoaderView()
+    private let shimmerLoaderView = ShimmerLoaderView()
 
     private lazy var profileMainInfoStack1: UIStackView = {
         let horizontalStackView = UIStackView(arrangedSubviews: [
@@ -101,10 +104,11 @@ final class ProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = .systemBackground
         addNCViews()
         setUpView()
-
+        setUpAnimation()
         fetchProfileInfo()
     }
 
@@ -149,6 +153,33 @@ final class ProfileViewController: UIViewController {
         profileTableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: "profileCell")
     }
 
+    private func setUpAnimation() {
+        view.addSubview(shimmerLoaderViewName)
+        view.addSubview(shimmerLoaderView)
+
+        shimmerLoaderViewName.snp.makeConstraints { make in
+            make.centerY.equalTo(profileImage.snp.centerY)
+            make.trailing.equalTo(profileMainInfoStack2)
+            make.leading.equalTo(profileImage.snp.trailing).offset(16)
+            make.height.equalTo(50)
+        }
+        shimmerLoaderView.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(profileMainInfoStack2)
+            make.top.equalTo(profileMainInfoStack1.snp.bottom).offset(20)
+            make.height.equalTo(300)
+        }
+
+        shimmerLoaderViewName.startShimmeringEffect()
+        shimmerLoaderView.startShimmeringEffect()
+    }
+    
+    private func stopAnimation() {
+        shimmerLoaderViewName.stopShimmeringEffect()
+        shimmerLoaderView.stopShimmeringEffect()
+        shimmerLoaderViewName.removeFromSuperview()
+        shimmerLoaderView.removeFromSuperview()
+    }
+
     private func fetchProfileInfo() {
         networkClient.send(
             request: profileRequest,
@@ -159,11 +190,12 @@ final class ProfileViewController: UIViewController {
                 DispatchQueue.main.async { [weak self] in
                     self?.profileInfo = profileInfo
                     self?.convert(with: profileInfo)
+                    self?.stopAnimation()
                   }
-                
             case .failure(let error):
                 print("Failed to fetch profile info: \(error.localizedDescription)")
             }
+            self.stopAnimation()
         }
     }
 
