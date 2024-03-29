@@ -18,9 +18,13 @@ final class EditProfileViewController: UIViewController {
     
     // MARK: -  Properties & Constants
 
-    weak var delegate: ProfileEditDelegate?
+    private let servicesAssembly: ServicesAssembly
+    private let networkClient = DefaultNetworkClient()
+    private let profileRequest = ProfileInfoRequest(userId: "/api/v1/profile/1")
     private var profileInfo: ProfileInfo?
-    
+    private var newProfileInfo: ProfileInfo?
+    weak var delegate: ProfileEditDelegate?
+
     private lazy var closeEditVCButton: UIButton = {
         let button = UIButton(type: .system)
         let xmarkImage = UIImage(systemName: "xmark")
@@ -174,25 +178,34 @@ final class EditProfileViewController: UIViewController {
         return textField
     }()
 
+    private let downloadNewImageField: UITextField = {
+        let textField = UITextField()
+        textField.textColor = UIColor(named: "nftBlack")
+        textField.placeholder = "Загрузить изображение"
+        textField.textAlignment = .center
+        textField.backgroundColor = UIColor(named: "nftLightGray")
+        textField.font = UIFont.systemFont(ofSize: 12)
+        textField.layer.cornerRadius = 12
+        return textField
+    }()
+
+    init(servicesAssembly: ServicesAssembly) {
+        self.servicesAssembly = servicesAssembly
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         view.backgroundColor = .systemBackground
         setUpView()
-        //TODO: Замени на fetchDataForProfile()
-        profileInfo = ProfileInfo(
-            name: "John Doe",
-            avatar: "https://code.s3.yandex.net/landings-v2-ios-developer/space.PNG",
-            description: "Better go than stay forever.",
-            website: "https://example.com",
-            nfts: ["1", "2", "3"],
-            likes: ["1", "2", "3"],
-            id: "1"
-        )
-        if let profileInfo = profileInfo {
-            convert(with: profileInfo)
-        }
+        fetchProfileInfoForEdit()
     }
 
     // MARK: -  Private Methods
@@ -200,8 +213,9 @@ final class EditProfileViewController: UIViewController {
     private func setUpView() {
         view.addSubview(closeEditVCButton)
         view.addSubview(profileImage)
-        profileImage.addSubview(changeProfileImageButton)
+        view.addSubview(changeProfileImageButton)
         view.addSubview(editProfileStackMain)
+        view.addSubview(downloadNewImageField)
 
         closeEditVCButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(0)
@@ -215,8 +229,8 @@ final class EditProfileViewController: UIViewController {
         }
         changeProfileImageButton.snp.makeConstraints { make in
             make.width.height.equalTo(70)
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview()
+            make.centerX.equalTo(profileImage.snp.centerX)
+            make.centerY.equalTo(profileImage.snp.centerY)
         }
         nameTextField.snp.makeConstraints { make in
             make.height.equalTo(44)
@@ -230,6 +244,29 @@ final class EditProfileViewController: UIViewController {
         editProfileStackMain.snp.makeConstraints { make in
             make.top.equalTo(profileImage.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview().inset(16)
+        }
+        downloadNewImageField.snp.makeConstraints { make in
+            make.top.equalTo(profileImage.snp.bottom).offset(4)
+            make.leading.trailing.equalToSuperview().inset(80)
+            make.height.equalTo(35)
+        }
+        downloadNewImageField.isHidden = true
+    }
+
+    private func fetchProfileInfoForEdit() {
+        networkClient.send(
+            request: profileRequest,
+            type: ProfileInfo.self) 
+        { result in
+            switch result {
+            case .success(let profileInfo):
+                DispatchQueue.main.async { [weak self] in
+                    self?.profileInfo = profileInfo
+                    self?.convert(with: profileInfo)
+                  }
+            case .failure(let error):
+                print("Failed to fetch profile info: \(error.localizedDescription)")
+            }
         }
     }
 
@@ -257,11 +294,67 @@ final class EditProfileViewController: UIViewController {
             options: options)
     }
 
-    @objc private func closeEditVCButtonTapped() {
-        delegate?.editProfileVCDismissed(self)
+    // Creation of request object
+    private func changeProfileData(with profile: ProfileInfo) {
+        var avatarURL: String
+        if downloadNewImageField.placeholder == "Загрузить изображение" {
+            avatarURL = profile.avatar
+        } else {
+            avatarURL = downloadNewImageField.text ?? profile.avatar
+        }
+
+        newProfileInfo = ProfileInfo(
+            name: nameTextField.text ?? "",
+            avatar: avatarURL,
+            description: bioTextField.text,
+            website: siteTextField.text ?? "",
+            nfts: profile.nfts,
+            likes: profile.likes,
+            id: profile.id)
     }
-    
+
+    private func updateNewProfileData() {
+        guard let profileInfo = profileInfo
+        else {
+            print("Profile data is nil")
+            return
+        }
+
+        changeProfileData(with: profileInfo)
+
+        guard let newProfileInfo = newProfileInfo
+        else {
+            print("New profile data is nil")
+            return
+        }
+
+        let updateRequest = ProfileUpdateRequest(userId: "/api/v1/profile/1", newProfileData: newProfileInfo)
+
+        networkClient.send(
+            request: updateRequest,
+            type: ProfileInfo.self)
+        { result in
+            switch result {
+            case .success(let updatedProfileInfo):
+                DispatchQueue.main.async {
+                    print("Profile successfully updated:", updatedProfileInfo)
+                    self.delegate?.editProfileVCDismissed(self)
+                }
+            case .failure(let error):
+                print("Failed to update profile:", error.localizedDescription)
+                self.delegate?.editProfileVCDismissed(self)
+            }
+        }
+    }
+
+    @objc private func closeEditVCButtonTapped() {
+        nameTextField.resignFirstResponder()
+        siteTextField.resignFirstResponder()
+        updateNewProfileData()
+    }
+
     @objc private func changeProfileImageButtonTapped() {
+        downloadNewImageField.isHidden = false
     }
 }
 

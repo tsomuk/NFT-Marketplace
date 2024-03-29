@@ -13,6 +13,9 @@ final class ProfileViewController: UIViewController {
 
     // MARK: -  Properties & Constants
 
+    private let servicesAssembly: ServicesAssembly
+    private let networkClient = DefaultNetworkClient()
+    private let profileRequest = ProfileInfoRequest(userId: "/api/v1/profile/1")
     private var numberOfMyNFT = 0
     private var numberOfChosenNFT = 0
     private var profileInfo: ProfileInfo?
@@ -41,7 +44,6 @@ final class ProfileViewController: UIViewController {
 
     private let profileNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Name"
         label.textAlignment = .center
         label.textColor = UIColor(named: "nftBlack")
         label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
@@ -50,16 +52,16 @@ final class ProfileViewController: UIViewController {
 
     private let profileImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "testProfileImage")
+        imageView.image = UIImage(systemName: "person.crop.circle.fill")
+        imageView.tintColor = UIColor(named: "nftBlack")
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
 
     private let profileBioLabel: UILabel = {
         let label = UILabel()
-        label.text = "Test"
         label.numberOfLines = 5
-        label.textAlignment = .center
+        label.textAlignment = .left
         label.textColor = UIColor(named: "nftBlack")
         label.font = UIFont.systemFont(ofSize: 13, weight: .medium)
         return label
@@ -68,7 +70,7 @@ final class ProfileViewController: UIViewController {
     private lazy var profileSiteButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(
-            "test.com",
+            "",
             for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         let nftBlue = UIColor(named: "nftBlue")
@@ -86,6 +88,15 @@ final class ProfileViewController: UIViewController {
         return tableView
     }()
 
+    init(servicesAssembly: ServicesAssembly) {
+        self.servicesAssembly = servicesAssembly
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
@@ -94,20 +105,7 @@ final class ProfileViewController: UIViewController {
         addNCViews()
         setUpView()
 
-        //TODO: Замени на fetchDataForProfile()
-        profileInfo = ProfileInfo(
-            name: "John Doe",
-            avatar: "https://code.s3.yandex.net/landings-v2-ios-developer/space.PNG",
-            description: "Better go than stay forever.",
-            website: "https://ru.wikipedia.org/wiki/NFT",
-            nfts: ["1", "2", "3"],
-            likes: ["1", "2", "3"],
-            id: "1"
-        )
-        if let profileInfo = profileInfo {
-            convert(with: profileInfo)
-        }
-
+        fetchProfileInfo()
     }
 
     // MARK: -  Private Methods
@@ -151,6 +149,24 @@ final class ProfileViewController: UIViewController {
         profileTableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: "profileCell")
     }
 
+    private func fetchProfileInfo() {
+        networkClient.send(
+            request: profileRequest,
+            type: ProfileInfo.self)
+        { result in
+            switch result {
+            case .success(let profileInfo):
+                DispatchQueue.main.async { [weak self] in
+                    self?.profileInfo = profileInfo
+                    self?.convert(with: profileInfo)
+                  }
+                
+            case .failure(let error):
+                print("Failed to fetch profile info: \(error.localizedDescription)")
+            }
+        }
+    }
+
     private func convert(with profile: ProfileInfo) {
         profileNameLabel.text = profile.name
         profileBioLabel.text = profile.description
@@ -163,6 +179,7 @@ final class ProfileViewController: UIViewController {
         profileSiteButton.setTitle(profile.website, for: .normal)
         numberOfMyNFT = profile.nfts.count
         numberOfChosenNFT = profile.likes.count
+        profileTableView.reloadData()
     }
 
     private func updateAvatar(
@@ -178,7 +195,7 @@ final class ProfileViewController: UIViewController {
     }
 
     @objc private func editProfileButtonTapped() {
-        let editPrifileVC = EditProfileViewController()
+        let editPrifileVC = EditProfileViewController(servicesAssembly: servicesAssembly)
         editPrifileVC.delegate = self
         let editPrifileNC = UINavigationController(rootViewController: editPrifileVC)
         present(editPrifileNC, animated: true, completion: nil)
@@ -197,6 +214,7 @@ final class ProfileViewController: UIViewController {
 
 extension ProfileViewController: ProfileEditDelegate {
     func editProfileVCDismissed(_ vc: EditProfileViewController) {
+        fetchProfileInfo()
         dismiss(animated: true, completion: nil)
     }
 }
@@ -293,14 +311,4 @@ extension ProfileViewController: UITableViewDelegate {
             action: nil)
         navigationItem.backBarButtonItem?.tintColor = UIColor(named: "nftBlack")
     }
-}
-
-struct ProfileInfo: Decodable {
-    let name: String
-    let avatar: String
-    let description: String
-    let website: String
-    let nfts: [String]
-    let likes: [String]
-    let id: String
 }
