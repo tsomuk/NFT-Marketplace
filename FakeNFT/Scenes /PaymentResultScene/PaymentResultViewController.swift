@@ -43,7 +43,7 @@ class PaymentResultViewController: UIViewController {
     }
     
     @objc private func backToCatalog() {
-        navigationController?.popToRootViewController(animated: true)
+        //TODO: add transition to the catalog tab
     }
     
     private func setupAppearance() {

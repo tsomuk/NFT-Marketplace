@@ -165,7 +165,7 @@ final class CartViewController: UIViewController {
 
         tableView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.bottom.equalTo(backgroundView.snp_topMargin)
         }
 

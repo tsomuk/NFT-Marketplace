@@ -53,7 +53,7 @@ final class CartTableViewCell: UITableViewCell {
     }()
 
     private lazy var stack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [nameLabel,ratingView, priceLabel, priceValueLabel])
+        let stack = UIStackView(arrangedSubviews: [nameLabel, priceLabel, priceValueLabel])
         stack.axis = .vertical
         stack.alignment = .leading
         stack.spacing = 5
@@ -67,6 +67,13 @@ final class CartTableViewCell: UITableViewCell {
         removeButton.addTarget(self, action: #selector(deleteItem), for: .touchUpInside)
         return removeButton
     }()
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        for view in ratingView.subviews {
+            view.removeFromSuperview()
+        }
+    }
 
     func setupAppearance() {
         contentView.addSubview(nftImage)
@@ -103,6 +110,7 @@ final class CartTableViewCell: UITableViewCell {
     }
 
     private func configureRatingStars(with rating: Int) {
+        stack.insertArrangedSubview(ratingView, at: 1)
         let totalStars = 5
         let starConfiguration = UIImage.SymbolConfiguration(pointSize: 12)
         for i in 1...totalStars {
