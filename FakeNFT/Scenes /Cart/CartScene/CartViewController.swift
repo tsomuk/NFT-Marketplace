@@ -13,7 +13,6 @@ final class CartViewController: UIViewController {
     // MARK: - ServicesAssembly
 
     let servicesAssembly: ServicesAssembly
-    let testNftButton = UIButton()
 
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
@@ -25,6 +24,8 @@ final class CartViewController: UIViewController {
     }
 
     // MARK: - Private varibles
+    
+    private var isLoading = false
 
     private var nftOrder: Order? = nil {
         didSet {
@@ -112,25 +113,35 @@ final class CartViewController: UIViewController {
     }
 
     private func getOrder() {
-        servicesAssembly.nftService.loadOrder { (result: Result<Order, Error>) in
-            switch result {
-            case .success(let order):
-                self.nftOrder = order
-                print("order", order)
-            case .failure(let error):
-                print(error.localizedDescription)
+        if !isLoading {
+            isLoading = true
+            servicesAssembly.nftService.loadOrder { (result: Result<Order, Error>) in
+                switch result {
+                case .success(let order):
+                    self.isLoading = false
+                    self.nftOrder = order
+                    print("order", order)
+                case .failure(let error):
+                    self.isLoading = false
+                    print(error.localizedDescription)
+                }
             }
         }
     }
 
     private func getNfts(_ ids: [String]) {
-        for id in ids {
-            servicesAssembly.nftService.loadNft(id: id) { (result: Result<Nft, Error>) in
-                switch result {
-                case .success(let nft):
-                    self.nfts.append(nft)
-                case .failure(let error):
-                    print(error.localizedDescription)
+        if !isLoading {
+            isLoading = true
+            for id in ids {
+                servicesAssembly.nftService.loadNft(id: id) { (result: Result<Nft, Error>) in
+                    switch result {
+                    case .success(let nft):
+                        self.nfts.append(nft)
+                        self.isLoading = false
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                        self.isLoading = false
+                    }
                 }
             }
         }
