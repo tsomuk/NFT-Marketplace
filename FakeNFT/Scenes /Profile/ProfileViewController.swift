@@ -15,7 +15,6 @@ final class ProfileViewController: UIViewController {
 
     private let servicesAssembly: ServicesAssembly
     private let networkClient = DefaultNetworkClient()
-    private let profileRequest = ProfileInfoRequest(userId: "/api/v1/profile/1")
     private var numberOfMyNFT = 0
     private var numberOfChosenNFT = 0
     private var profileInfo: ProfileInfo?
@@ -127,9 +126,14 @@ final class ProfileViewController: UIViewController {
     }
 
     private func setUpView() {
-        view.addSubview(profileMainInfoStack2)
-        view.addSubview(profileSiteButton)
-        view.addSubview(profileTableView)
+        [profileMainInfoStack2,
+         profileSiteButton,
+         profileTableView,
+         shimmerLoaderViewName,
+         shimmerLoaderView
+        ].forEach {
+             view.addSubview($0)
+        }
 
         profileImage.snp.makeConstraints { make in
             make.width.height.equalTo(70)
@@ -151,12 +155,10 @@ final class ProfileViewController: UIViewController {
         profileTableView.dataSource = self
         profileTableView.delegate = self
         profileTableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: "profileCell")
+        profileTableView.isScrollEnabled = false
     }
 
     private func setUpAnimation() {
-        view.addSubview(shimmerLoaderViewName)
-        view.addSubview(shimmerLoaderView)
-
         shimmerLoaderViewName.snp.makeConstraints { make in
             make.centerY.equalTo(profileImage.snp.centerY)
             make.trailing.equalTo(profileMainInfoStack2)
@@ -182,19 +184,19 @@ final class ProfileViewController: UIViewController {
 
     private func fetchProfileInfo() {
         networkClient.send(
-            request: profileRequest,
+            request: ProfileInfoRequest(userId: "/api/v1/profile/1"),
             type: ProfileInfo.self)
         { result in
-            switch result {
-            case .success(let profileInfo):
-                DispatchQueue.main.async { [weak self] in
-                    self?.profileInfo = profileInfo
-                    self?.convert(with: profileInfo)
-                    self?.stopAnimation()
-                  }
-            case .failure(let error):
-                print("Failed to fetch profile info: \(error.localizedDescription)")
-            }
+            DispatchQueue.main.async { [weak self] in
+                   switch result {
+                       case .success(let profileInfo):
+                           self?.profileInfo = profileInfo
+                           self?.convert(with: profileInfo)
+                           self?.stopAnimation()
+                       case .failure(let error):
+                           print("Failed to fetch profile info: \(error.localizedDescription)")
+                   }
+               }
             self.stopAnimation()
         }
     }
@@ -276,14 +278,15 @@ extension ProfileViewController: UITableViewDataSource {
         }
 
         cell.tintColor = UIColor(named: "nftBlack")
+        cell.selectionStyle = .none
 
         switch indexPath.section {
         case 0:
-            cell.titleLabel.text = "Мои NFT (\(numberOfMyNFT))"
+            cell.setTitleLabel(text: "Мои NFT (\(numberOfMyNFT))")
         case 1:
-            cell.titleLabel.text = "Избранные NFT (\(numberOfChosenNFT))"
+            cell.setTitleLabel(text: "Избранные NFT (\(numberOfChosenNFT))")
         case 2:
-            cell.titleLabel.text = "О разработчике"
+            cell.setTitleLabel(text: "О разработчике")
         default:
             break
         }

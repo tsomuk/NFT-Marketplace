@@ -21,7 +21,6 @@ final class EditProfileViewController: UIViewController {
 
     private let servicesAssembly: ServicesAssembly
     private let networkClient = DefaultNetworkClient()
-    private let profileRequest = ProfileInfoRequest(userId: "/api/v1/profile/1")
     private var profileInfo: ProfileInfo?
     private var newProfileInfo: ProfileInfo?
     weak var delegate: ProfileEditDelegate?
@@ -32,7 +31,7 @@ final class EditProfileViewController: UIViewController {
 
     private lazy var closeEditVCButton: UIButton = {
         let button = UIButton(type: .system)
-        let xmarkImage = UIImage(systemName: "xmark")
+        let xmarkImage = UIImage(named: "close")
         button.setImage(xmarkImage, for: .normal)
         button.tintColor = UIColor(named: "nftBlack")
         button.addTarget(
@@ -212,25 +211,34 @@ final class EditProfileViewController: UIViewController {
         setUpView()
         setUpAnimation()
         fetchProfileInfoForEdit()
+        dismissKeyboard()
     }
 
     // MARK: -  Private Methods
 
     private func setUpView() {
-        view.addSubview(closeEditVCButton)
-        view.addSubview(profileImage)
-        view.addSubview(changeProfileImageButton)
-        view.addSubview(editProfileStackMain)
-        view.addSubview(downloadNewImageField)
+        [profileImage,
+         changeProfileImageButton,
+         editProfileStackMain,
+         downloadNewImageField,
+         shimmerLoaderViewName,
+         shimmerLoaderViewBio,
+         shimmerLoaderViewSite,
+        ].forEach {
+            view.addSubview($0)
+        }
+
+        navigationController?.view.addSubview(closeEditVCButton)
 
         closeEditVCButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).inset(0)
-            make.trailing.equalTo(view.safeAreaLayoutGuide).inset(16)
             make.height.width.equalTo(42)
+            make.top.equalToSuperview().offset(28)
+            make.trailing.equalToSuperview().inset(16)
         }
+
         profileImage.snp.makeConstraints { make in
             make.width.height.equalTo(70)
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(80)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(22)
             make.centerX.equalToSuperview()
         }
         changeProfileImageButton.snp.makeConstraints { make in
@@ -256,14 +264,27 @@ final class EditProfileViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(80)
             make.height.equalTo(35)
         }
+
+        nameTextField.isUserInteractionEnabled = false
+        bioTextField.isUserInteractionEnabled = false
+        siteTextField.isUserInteractionEnabled = false
+        changeProfileImageButton.isUserInteractionEnabled = false
+
         downloadNewImageField.isHidden = true
+
+        nameTextField.delegate = self
+        siteTextField.delegate = self
+        downloadNewImageField.delegate = self
+    }
+
+    private func enableEditing() {
+        nameTextField.isUserInteractionEnabled = true
+        bioTextField.isUserInteractionEnabled = true
+        siteTextField.isUserInteractionEnabled = true
+        changeProfileImageButton.isUserInteractionEnabled = true
     }
 
     private func setUpAnimation() {
-        view.addSubview(shimmerLoaderViewName)
-        view.addSubview(shimmerLoaderViewBio)
-        view.addSubview(shimmerLoaderViewSite)
-
         shimmerLoaderViewName.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom).offset(8)
             make.leading.trailing.equalToSuperview().inset(16)
@@ -294,22 +315,29 @@ final class EditProfileViewController: UIViewController {
         shimmerLoaderViewSite.removeFromSuperview()
     }
     
+    private func dismissKeyboard() {
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(handleTap))
+        view.addGestureRecognizer(tapGesture)
+    }
+
     private func fetchProfileInfoForEdit() {
         networkClient.send(
-            request: profileRequest,
-            type: ProfileInfo.self) 
+            request: ProfileInfoRequest(userId: "/api/v1/profile/1"),
+            type: ProfileInfo.self)
         { result in
-            switch result {
-            case .success(let profileInfo):
-                DispatchQueue.main.async { [weak self] in
+            DispatchQueue.main.async { [weak self] in
+                switch result {
+                case .success(let profileInfo):
                     self?.profileInfo = profileInfo
                     self?.convert(with: profileInfo)
-                    self?.stopAnimation()
-                  }
-            case .failure(let error):
-                print("Failed to fetch profile info: \(error.localizedDescription)")
-                self.stopAnimation()
+                    self?.enableEditing()
+                case .failure(let error):
+                    print("Failed to fetch profile info: \(error.localizedDescription)")
+                }
             }
+            self.stopAnimation()
         }
     }
     
@@ -371,6 +399,7 @@ final class EditProfileViewController: UIViewController {
         else {
             print("Profile data is nil")
             ProgressHUD.dismiss()
+            delegate?.editProfileVCDismissed(self)
             return
         }
 
@@ -380,6 +409,7 @@ final class EditProfileViewController: UIViewController {
         else {
             print("New profile data is nil")
             ProgressHUD.dismiss()
+            delegate?.editProfileVCDismissed(self)
             return
         }
 
@@ -388,18 +418,20 @@ final class EditProfileViewController: UIViewController {
         networkClient.send(
             request: updateRequest,
             type: ProfileInfo.self)
-        { result in
-            switch result {
-            case .success(let updatedProfileInfo):
-                DispatchQueue.main.async {
+        { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let updatedProfileInfo):
                     print("Profile successfully updated:", updatedProfileInfo)
                     ProgressHUD.dismiss()
                     self.delegate?.editProfileVCDismissed(self)
+                case .failure(let error):
+                    print("Failed to update profile:", error.localizedDescription)
+                    ProgressHUD.dismiss()
+                    self.delegate?.editProfileVCDismissed(self)
                 }
-            case .failure(let error):
-                print("Failed to update profile:", error.localizedDescription)
-                ProgressHUD.dismiss()
-                self.delegate?.editProfileVCDismissed(self)
             }
         }
     }
@@ -412,6 +444,10 @@ final class EditProfileViewController: UIViewController {
 
     @objc private func changeProfileImageButtonTapped() {
         downloadNewImageField.isHidden = false
+    }
+    
+    @objc private func handleTap() {
+        view.endEditing(true)
     }
 }
 

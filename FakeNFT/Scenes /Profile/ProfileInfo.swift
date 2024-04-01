@@ -14,5 +14,5 @@ struct ProfileInfo: Codable {
     let website: String
     let nfts: [String]
     let likes: [String]
-    let id: String
+    let id: UUID
 }

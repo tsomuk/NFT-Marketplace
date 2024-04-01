@@ -11,7 +11,7 @@ import SnapKit
 
 final class ProfileTableViewCell: UITableViewCell {
 
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.textColor = UIColor(named: "nftBlack")
         titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -39,5 +39,9 @@ final class ProfileTableViewCell: UITableViewCell {
             make.trailing.equalTo(contentView.snp.trailing).offset(-16)
             make.centerY.equalToSuperview()
         }
+    }
+
+    func setTitleLabel(text: String) {
+        titleLabel.text = text
     }
 }
