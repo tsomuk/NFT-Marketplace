@@ -106,7 +106,7 @@ final class CartTableViewCell: UITableViewCell {
     }
 
     @objc func deleteItem() {
-        print("delete item")
+        //TODO: Add delete functionality
     }
 
     private func configureRatingStars(with rating: Int) {

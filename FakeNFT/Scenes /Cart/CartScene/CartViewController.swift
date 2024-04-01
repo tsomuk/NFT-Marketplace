@@ -39,7 +39,6 @@ final class CartViewController: UIViewController {
             updateHolders()
             numOfElementsLabel.text = "\(nfts.count) NFT"
             totalPriceLabel.text = calculateCart()
-            print("NFT Bank:", nfts)
         }
     }
 
@@ -61,7 +60,7 @@ final class CartViewController: UIViewController {
 
     private let holderLabel = NFTTextLabel(text: "Корзина пуста", fontSize: 17, fontColor: .nftBlack, fontWeight: .bold)
 
-    private lazy var vStack: UIStackView = {
+    private lazy var priceVStack: UIStackView = {
         let vStack = UIStackView(arrangedSubviews: [numOfElementsLabel, totalPriceLabel])
         vStack.axis = .vertical
         vStack.spacing = 2
@@ -100,7 +99,6 @@ final class CartViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        nfts.removeAll()
         getOrder()
     }
 
@@ -120,7 +118,6 @@ final class CartViewController: UIViewController {
                 case .success(let order):
                     self.isLoading = false
                     self.nftOrder = order
-                    print("order", order)
                 case .failure(let error):
                     self.isLoading = false
                     print(error.localizedDescription)
@@ -136,14 +133,20 @@ final class CartViewController: UIViewController {
                 servicesAssembly.nftService.loadNft(id: id) { (result: Result<Nft, Error>) in
                     switch result {
                     case .success(let nft):
-                        self.nfts.append(nft)
                         self.isLoading = false
+                        self.nfts.isEmpty ? self.nfts.append(nft) : self.apppendNewNft(nft)
                     case .failure(let error):
                         print(error.localizedDescription)
                         self.isLoading = false
                     }
                 }
             }
+        }
+    }
+    
+    private func apppendNewNft(_ nft: Nft) {
+        if nfts.filter({ $0.id == nft.id}).count == 0 {
+            nfts.append(nft)
         }
     }
 
@@ -158,7 +161,7 @@ final class CartViewController: UIViewController {
     private func updateHolders() {
         tableView.isHidden = nfts.isEmpty
         payButton.isHidden = nfts.isEmpty
-        vStack.isHidden = nfts.isEmpty
+        priceVStack.isHidden = nfts.isEmpty
         backgroundView.isHidden = nfts.isEmpty
         holderLabel.isHidden = !nfts.isEmpty
     }
@@ -166,7 +169,7 @@ final class CartViewController: UIViewController {
     private func setupAppearance() {
         view.backgroundColor = .nftWhite
 
-        view.addSubviews(tableView,backgroundView,payButton,holderLabel,vStack)
+        view.addSubviews(tableView,backgroundView,payButton,holderLabel,priceVStack)
 
         backgroundView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
@@ -185,13 +188,13 @@ final class CartViewController: UIViewController {
         }
 
         payButton.snp.makeConstraints { make in
-            make.leading.equalTo(vStack.snp.trailing).offset(24)
+            make.leading.equalTo(priceVStack.snp.trailing).offset(24)
             make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(44)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-16)
         }
 
-        vStack.snp.makeConstraints { make in
+        priceVStack.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-16)
         }
@@ -223,12 +226,9 @@ final class CartViewController: UIViewController {
         }
 
         let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel) { _ in
-
         }
-        actionSheet.addAction(priceSort)
-        actionSheet.addAction(ratingSort)
-        actionSheet.addAction(titleSort)
-        actionSheet.addAction(cancelAction)
+        
+        [priceSort,ratingSort,titleSort,cancelAction].forEach { actionSheet.addAction($0)}
         self.present(actionSheet, animated: true, completion: nil)
     }
 }
