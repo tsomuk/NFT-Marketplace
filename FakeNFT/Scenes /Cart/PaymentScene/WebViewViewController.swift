@@ -33,16 +33,14 @@ final class WebViewViewController: UIViewController {
         guard let url = URL(string: basicURL) else { return }
         let request = URLRequest(url: url)
         webview.load(request)
+        webview.navigationDelegate = self
+        
     }
 
     private func showProgressHUD() {
         ProgressHUD.show()
         ProgressHUD.animationType = .circleSpinFade
         ProgressHUD.colorHUD = .clear
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
-            ProgressHUD.dismiss()
-        }
     }
 
     private func setupAppearance() {
@@ -51,5 +49,11 @@ final class WebViewViewController: UIViewController {
         webview.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+    }
+}
+
+extension WebViewViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        ProgressHUD.dismiss()
     }
 }
