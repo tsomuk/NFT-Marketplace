@@ -8,30 +8,30 @@
 import UIKit
 import SnapKit
 
-class CartViewController: UIViewController {
-    
+final class CartViewController: UIViewController {
+
     // MARK: - ServicesAssembly
-    
+
     let servicesAssembly: ServicesAssembly
     let testNftButton = UIButton()
-    
+
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Private varibles
-    
+
     private var nftOrder: Order? = nil {
         didSet {
             getNfts(nftOrder?.nfts ?? [])
         }
     }
-    
+
     private var nfts: [Nft] = [] {
         didSet {
             tableView.reloadData()
@@ -41,33 +41,32 @@ class CartViewController: UIViewController {
             print("NFT Bank:", nfts)
         }
     }
-    
+
     private lazy var payButton: UIButton = {
         let payButton = NFTButton(title: "К оплате")
         payButton.addTarget(self, action: #selector(goToPayment), for: .touchUpInside)
         return payButton
     }()
-    
-    
+
     private lazy var numOfElementsLabel: UILabel = {
-        let numOfElementsLabel = NFTTextLabel(text: "\(nfts.count) NFT", fontSize: 15, fontColor: .nftBlack, fontWeight: .regular)
+        let numOfElementsLabel = NFTTextLabel(text: "", fontSize: 15, fontColor: .nftBlack, fontWeight: .regular)
         return numOfElementsLabel
     }()
-    
+
     private lazy var totalPriceLabel: UILabel = {
-        let totalPriceLabel = NFTTextLabel(text: calculateCart(), fontSize: 17, fontColor: .nftGreen, fontWeight: .bold)
+        let totalPriceLabel = NFTTextLabel(text: "", fontSize: 17, fontColor: .nftGreen, fontWeight: .bold)
         return totalPriceLabel
     }()
-    
+
     private let holderLabel = NFTTextLabel(text: "Корзина пуста", fontSize: 17, fontColor: .nftBlack, fontWeight: .bold)
-    
+
     private lazy var vStack: UIStackView = {
         let vStack = UIStackView(arrangedSubviews: [numOfElementsLabel, totalPriceLabel])
         vStack.axis = .vertical
         vStack.spacing = 2
         return vStack
     }()
-    
+
     private lazy var backgroundView: UIView = {
         let backgroundView = UIView()
         backgroundView.backgroundColor = .nftLightGray
@@ -76,46 +75,42 @@ class CartViewController: UIViewController {
         backgroundView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         return backgroundView
     }()
-    
+
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.dataSource = self
-        tableView.delegate = self
         tableView.rowHeight = 140
         tableView.backgroundColor = .nftWhite
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
         return tableView
     }()
-    
+
     // MARK: - Life Cycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupAppearance()
         setupNavBar()
         updateHolders()
-        
+
         tableView.register(CartTableViewCell.self, forCellReuseIdentifier: "cell")
-        
-        
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         nfts.removeAll()
         getOrder()
     }
-    
-    
+
     // MARK: - Private methods
     
     private func setupNavBar() {
-        let sortButton = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(sortButtonTapped))
+        let sortButton = UIBarButtonItem(image: .sort, style: .plain, target: self, action: #selector(sortButtonTapped))
         sortButton.tintColor = .nftBlack
         navigationItem.rightBarButtonItem = sortButton
     }
-    
+
     private func getOrder() {
         servicesAssembly.nftService.loadOrder { (result: Result<Order, Error>) in
             switch result {
@@ -127,7 +122,7 @@ class CartViewController: UIViewController {
             }
         }
     }
-    
+
     private func getNfts(_ ids: [String]) {
         for id in ids {
             servicesAssembly.nftService.loadNft(id: id) { (result: Result<Nft, Error>) in
@@ -140,7 +135,7 @@ class CartViewController: UIViewController {
             }
         }
     }
-    
+
     private func calculateCart() -> String {
         var sum : Float = 0
         for nft in nfts {
@@ -148,7 +143,7 @@ class CartViewController: UIViewController {
         }
         return String(format: "%.2f", sum) + " ETN"
     }
-    
+
     private func updateHolders() {
         tableView.isHidden = nfts.isEmpty
         payButton.isHidden = nfts.isEmpty
@@ -156,71 +151,68 @@ class CartViewController: UIViewController {
         backgroundView.isHidden = nfts.isEmpty
         holderLabel.isHidden = !nfts.isEmpty
     }
-    
-    
+
     private func setupAppearance() {
         view.backgroundColor = .nftWhite
-        
+
         view.addSubviews(tableView,backgroundView,payButton,holderLabel,vStack)
-        
-        
+
         backgroundView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(76)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
-        
+
         tableView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.bottom.equalTo(backgroundView.snp_topMargin)
-            
         }
-        
+
         holderLabel.snp.makeConstraints { make in
             make.centerY.centerX.equalToSuperview()
         }
-        
+
         payButton.snp.makeConstraints { make in
             make.leading.equalTo(vStack.snp.trailing).offset(24)
             make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(44)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-16)
         }
-        
+
         vStack.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-16)
         }
     }
-    
+
     @objc private func goToPayment() {
         let paymentViewController = PaymentOptionViewController()
         navigationController?.pushViewController(paymentViewController, animated: true)
         navigationController?.navigationBar.tintColor = .nftBlack
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
-    
+
     // MARK: - Action Sheet
-    
+
     @objc private func sortButtonTapped() {
-        
+
         let actionSheet = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
-        
+
         let priceSort = UIAlertAction(title: "По цене", style: .default) { _ in
-            
+            // TODO: Add price sort
         }
-        
+
         let ratingSort = UIAlertAction(title: "По рейтингу", style: .default) { _ in
-            
+            // TODO: Add rating sort
         }
-        
+
         let titleSort = UIAlertAction(title: "По названию", style: .default) { _ in
-            
+            // TODO: Add name sort
         }
-        
+
         let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel) { _ in
-            
+
         }
         actionSheet.addAction(priceSort)
         actionSheet.addAction(ratingSort)
@@ -230,17 +222,13 @@ class CartViewController: UIViewController {
     }
 }
 
-// MARK: - TableView Delegate & Datasouce
-
-extension CartViewController: UITableViewDelegate {
-    
-}
+// MARK: - TableView Datasouce
 
 extension CartViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         nfts.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CartTableViewCell
         let nft = nfts[indexPath.row]
@@ -250,7 +238,7 @@ extension CartViewController: UITableViewDataSource {
     }
 }
 
-//  MARK: - Additional files (Temperary) -
+//  MARK: - Additional files (Temperary)
 
 // MARK: - Color+extension
 
@@ -277,7 +265,6 @@ extension UIImage {
     static var sort = UIImage(named: "sort") ?? UIImage()
     static var done = UIImage(named: "Done") ?? UIImage()
     static var close = UIImage(named: "close") ?? UIImage()
-    
 }
 
 // MARK: - View+extension

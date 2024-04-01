@@ -9,50 +9,50 @@
 import UIKit
 
 final class PaymentViewCell: UICollectionViewCell {
-    
-    lazy var currencyTitle = NFTTextLabel(text: "", fontSize: 13, fontColor: .nftBlack, fontWeight: .regular)
-    lazy var currencySymbol = NFTTextLabel(text: "",fontSize: 13, fontColor: .nftGreen, fontWeight: .regular)
-    
-    private lazy var vStack: UIStackView = {
-        let vStack = UIStackView(arrangedSubviews: [currencyTitle, currencySymbol])
-        vStack.axis = .vertical
-        vStack.spacing = 0
-        return vStack
+
+    private lazy var currencyTitle = NFTTextLabel(text: "", fontSize: 13, fontColor: .nftBlack, fontWeight: .regular)
+    private lazy var currencySymbol = NFTTextLabel(text: "",fontSize: 13, fontColor: .nftGreen, fontWeight: .regular)
+
+    private lazy var stackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [currencyTitle, currencySymbol])
+        stackView.axis = .vertical
+        stackView.spacing = 0
+        return stackView
     }()
-    
-    lazy var currencyImage: UIImageView = {
+
+    private lazy var currencyImage: UIImageView = {
         let currencyImage = UIImageView()
         currencyImage.layer.cornerRadius = 6
         currencyImage.layer.masksToBounds = true
         return currencyImage
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupAppearance()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func configureCell(currency: Currency){
         currencyTitle.text = currency.title
         currencySymbol.text = currency.name
         currencyImage.image = currency.image
     }
-    
-    func setupAppearance() {
-        
-        contentView.addSubviews(vStack, currencyImage)
+
+    private func setupAppearance() {
+
+        contentView.addSubviews(stackView, currencyImage)
         
         currencyImage.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(12)
             make.height.width.equalTo(36)
         }
-        
-        vStack.snp.makeConstraints { make in
+
+        stackView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalTo(currencyImage.snp.trailing).offset(4)
         }

@@ -7,8 +7,8 @@
 
 import UIKit
 
-class DeleteViewController: UIViewController {
-    
+final class DeleteViewController: UIViewController {
+
     private lazy var deleteButton: UIButton = {
         let deleteButton = NFTButton(title: "Удалить")
         deleteButton.setTitleColor(.nftRed, for: .normal)
@@ -16,28 +16,28 @@ class DeleteViewController: UIViewController {
         deleteButton.addTarget(self, action: #selector(deleteTapped), for: .touchUpInside)
         return deleteButton
     }()
-    
+
     private lazy var cancelButton: UIButton = {
         let cancelButton = NFTButton(title: "Вернуться")
         cancelButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         cancelButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
         return cancelButton
     }()
-    
+
     private lazy var nftImage: UIImageView = {
         let nftImage = UIImageView()
         nftImage.image = UIImage(named: "paymentHolder")
         nftImage.contentMode = .scaleAspectFit
         return nftImage
     }()
-    
+
     private let conformationLabel = NFTTextLabel(
         text: "Вы уверены, что хотите удалить объект из корзины?",
         fontSize: 13,
         fontColor: .nftBlack,
         fontWeight: .regular
     )
-    
+
     private lazy var buttonStack: UIStackView = {
         let buttonStack = UIStackView(arrangedSubviews: [deleteButton, cancelButton])
         buttonStack.axis = .horizontal
@@ -45,8 +45,7 @@ class DeleteViewController: UIViewController {
         buttonStack.distribution = .fillEqually
         return buttonStack
     }()
-    
-    
+
     private lazy var vStack: UIStackView = {
         let vStack = UIStackView(arrangedSubviews: [nftImage, conformationLabel, buttonStack])
         vStack.axis = .vertical
@@ -54,35 +53,35 @@ class DeleteViewController: UIViewController {
         vStack.alignment = .leading
         return vStack
     }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupAppearance()
-        
+
         // Установка прозрачного фона с эффектом размытия
         let blurEffect = UIBlurEffect(style: .systemUltraThinMaterialLight)
         let blurView = UIVisualEffectView(effect: blurEffect)
         blurView.frame = view.bounds
         view.insertSubview(blurView, at: 0)
     }
-    
+
     private func setupAppearance() {
         view.backgroundColor = .clear
         view.addSubview(vStack)
-        
+
         conformationLabel.textAlignment = .center
-        
+
         vStack.snp.makeConstraints { make in
             make.centerY.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(36)
         }
-        
+
         buttonStack.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(36)
             make.height.equalTo(44)
-            
+        
             nftImage.snp.makeConstraints { make in
                 make.height.equalTo(108)
                 make.centerX.equalToSuperview()
@@ -91,7 +90,7 @@ class DeleteViewController: UIViewController {
     }
     
     @objc private func deleteTapped() {
-        print("delete")
+        // TODO: Add delete functionality
     }
     
     @objc private func cancelTapped() {

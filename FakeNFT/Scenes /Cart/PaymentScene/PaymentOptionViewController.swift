@@ -8,14 +8,14 @@
 
 import UIKit
 
-class PaymentOptionViewController: UIViewController {
-    
+final class PaymentOptionViewController: UIViewController {
+
     private lazy var payButton: UIButton = {
         let payButton = NFTButton(title: "Оплатить")
         payButton.addTarget(self, action: #selector(goToPaymentResult), for: .touchUpInside)
         return payButton
     }()
-    
+
     private lazy var backgroundView: UIView = {
         let backgroundView = UIView()
         backgroundView.backgroundColor = .nftLightGray
@@ -24,14 +24,14 @@ class PaymentOptionViewController: UIViewController {
         backgroundView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         return backgroundView
     }()
-    
+
     private let userAgreementLabel = NFTTextLabel(
         text: "Совершая покупку, вы соглашаетесь с условиями",
         fontSize: 13,
         fontColor: .nftBlack,
         fontWeight: .regular
     )
-    
+
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -40,13 +40,12 @@ class PaymentOptionViewController: UIViewController {
         collectionView.backgroundColor = .clear
         collectionView.allowsMultipleSelection = false
         collectionView.dataSource = self
-        collectionView.delegate = self  // Без этого не будут работать размеры, отступы и прочее из UICollectionViewDelegateFlowLayout
+        collectionView.delegate = self
         collectionView.showsVerticalScrollIndicator = false
         collectionView.register(PaymentViewCell.self, forCellWithReuseIdentifier: "cell")
-        
         return collectionView
     }()
-    
+
     private let userAgreementButton: UIButton = {
         let userAgreementButton = UIButton()
         userAgreementButton.setTitle("Пользовательского соглашения", for: .normal)
@@ -54,9 +53,8 @@ class PaymentOptionViewController: UIViewController {
         userAgreementButton.titleLabel?.font = .systemFont(ofSize: 13)
         userAgreementButton.addTarget(self, action: #selector(showUserAgreement), for: .touchUpInside)
         return userAgreementButton
-        
     }()
-    
+
     private lazy var vStack: UIStackView = {
         let vStack = UIStackView(arrangedSubviews: [userAgreementLabel, userAgreementButton])
         vStack.axis = .vertical
@@ -64,46 +62,44 @@ class PaymentOptionViewController: UIViewController {
         vStack.alignment = .leading
         return vStack
     }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupAppearance()
     }
-    
+
     @objc private func goToPaymentResult() {
         let paymentResult = PaymentResultViewController()
         navigationController?.pushViewController(paymentResult, animated: true)
     }
-    
+
     @objc private func showUserAgreement() {
         let webViewViewController = WebViewViewController()
         present(webViewViewController, animated: true)
     }
-    
+
     private func setupAppearance() {
-        title = "Выборите способ оплаты"
+        title = "Выберите способ оплаты"
         view.backgroundColor = .nftWhite
         tabBarController?.tabBar.isHidden = true
-        
         view.addSubviews(collectionView,backgroundView,payButton,vStack)
-        
+
         collectionView.snp.makeConstraints { make in
             make.leading.trailing.top.equalTo(view.safeAreaLayoutGuide)
             make.bottom.equalTo(backgroundView.snp.top)
         }
-        
+
         vStack.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalTo(payButton.snp_topMargin).offset(-16)
         }
-        
+
         backgroundView.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
             make.height.equalTo(186)
-            
         }
-        
+
         payButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(60)
@@ -116,7 +112,7 @@ extension PaymentOptionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         Currency.mockCurrency.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PaymentViewCell else { return UICollectionViewCell() }
         let currency = Currency.mockCurrency[indexPath.item]
@@ -134,7 +130,7 @@ extension PaymentOptionViewController: UICollectionViewDelegate {
         cell?.layer.cornerRadius = 12
         cell?.layer.borderColor = UIColor.nftBlack.cgColor
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as? PaymentViewCell
         cell?.layer.borderWidth = 0
@@ -149,17 +145,16 @@ extension PaymentOptionViewController: UICollectionViewDelegateFlowLayout {
         let height : CGFloat = 46
         return CGSize(width: width , height: height)
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 16
+        return 7
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 7
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 20, left: 16, bottom: 10, right: 16)
     }
 }
-
