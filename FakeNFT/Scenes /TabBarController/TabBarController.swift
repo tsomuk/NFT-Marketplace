@@ -44,15 +44,14 @@ final class TabBarController: UITabBarController {
  
     private func configureTabs() {
         let profileController = ProfileViewController()
-        let catalogController = TestCatalogViewController(
-            servicesAssembly: servicesAssembly
-        )
-        let cartController = CartViewController()
+        let catalogController = TestCatalogViewController(servicesAssembly: servicesAssembly)
+        let cartController = CartViewController(servicesAssembly: servicesAssembly)
+        let cardNavigationController = UINavigationController(rootViewController: cartController)
         let statisticsController = StatisticsViewController()
         profileController.tabBarItem = profileTabBarItem
         catalogController.tabBarItem = catalogTabBarItem
         cartController.tabBarItem = cartTabBarItem
         statisticsController.tabBarItem = statisticsTabBarItem
-        viewControllers = [profileController, catalogController, cartController, statisticsController]
+        viewControllers = [profileController, catalogController, cardNavigationController, statisticsController]
     }
 }
