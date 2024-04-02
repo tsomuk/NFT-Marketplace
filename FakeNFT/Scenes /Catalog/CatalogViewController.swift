@@ -5,10 +5,11 @@ import UIKit
 final class CatalogViewController: UIViewController {
     private let servicesAssembly: ServicesAssembly
 
-    private var allCollections: [Collection] = []
+    private var allCollections: [CatalogCollection] = []
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
+        tableView.showsVerticalScrollIndicator = false
         tableView.register(CatalogTableViewCell.self, forCellReuseIdentifier: "CatalogCell")
         tableView.separatorStyle = .none
         tableView.dataSource = self
@@ -44,14 +45,14 @@ final class CatalogViewController: UIViewController {
         ProgressHUD.show()
         let request = CatalogRequest()
         let networkService = DefaultNetworkClient()
-        networkService.send(request: request, type: [Collection].self) { [weak self] result in
+        networkService.send(request: request, type: [CatalogCollection].self) { [weak self] result in
             switch result {
             case .success(let collections):
                 self?.allCollections = collections
                 self?.tableView.reloadData()
                 ProgressHUD.dismiss()
-                self?.tableView.reloadData()
             case .failure(let error):
+                // TODO: - Добавить реакцию на ошибок
                 assertionFailure(error.localizedDescription)
                 ProgressHUD.dismiss()
                 return
@@ -69,6 +70,7 @@ final class CatalogViewController: UIViewController {
         )
     }
 
+    // TODO: - Добавить сортировку каталога
     @objc private func sortedCatalog() {
 
     }
@@ -93,8 +95,6 @@ extension CatalogViewController: UITableViewDataSource {
             imageURL: URL(string: urlString),
             label: "\(allCollections[indexPath.row].name) (\(allCollections[indexPath.row].nfts.count))"
         )
-        cell.layer.cornerRadius = 12
-        cell.clipsToBounds = true
         return cell
     }
 }
