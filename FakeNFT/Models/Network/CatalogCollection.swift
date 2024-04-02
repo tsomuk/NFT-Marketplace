@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Collection: Decodable {
-    let id: String
+struct CatalogCollection: Decodable {
+    let id: UUID
     let cover: String
     let name: String
     let nfts: [String]

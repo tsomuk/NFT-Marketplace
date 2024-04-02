@@ -13,6 +13,7 @@ final class CatalogTableViewCell: UITableViewCell {
         let image = UIImageView()
         image.layer.cornerRadius = 12
         image.clipsToBounds = true
+        image.contentMode = .scaleAspectFill
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
@@ -26,6 +27,10 @@ final class CatalogTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: "ScheduleCell")
+
+        layer.cornerRadius = 12
+        clipsToBounds = true
+        selectionStyle = .none
 
         contentView.addSubview(catalogImageView)
         contentView.addSubview(nameLabel)
