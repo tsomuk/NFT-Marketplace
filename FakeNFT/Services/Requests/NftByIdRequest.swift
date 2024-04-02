@@ -1,6 +1,7 @@
 import Foundation
 
 struct NFTRequest: NetworkRequest {
+    var headers: [String : String]?
 
     let id: String
 
