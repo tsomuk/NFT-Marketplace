@@ -9,8 +9,18 @@ import UIKit
 import SnapKit
 import Kingfisher
 
+// MARK: - Protocols
+
+protocol DeleteNftDelegate: AnyObject {
+    func deleteNft(id: String)
+}
+
+// MARK: - Class
+
 final class CartTableViewCell: UITableViewCell {
 
+// MARK: - Init
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupAppearance()
@@ -20,6 +30,11 @@ final class CartTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+// MARK: - Varibles
+    
+    weak var delegate: DeleteNftDelegate?
+    private var nftID: String?
+    
     private lazy var nftImage: UIImageView = {
         let nftImage = UIImageView()
         nftImage.layer.cornerRadius = 12
@@ -68,6 +83,8 @@ final class CartTableViewCell: UITableViewCell {
         return removeButton
     }()
     
+// MARK: - Methods
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         for view in ratingView.subviews {
@@ -75,10 +92,8 @@ final class CartTableViewCell: UITableViewCell {
         }
     }
 
-    func setupAppearance() {
-        contentView.addSubview(nftImage)
-        contentView.addSubview(stack)
-        contentView.addSubview(deleteButton)
+    private func setupAppearance() {
+        contentView.addSubviews(nftImage, stack, deleteButton)
 
         nftImage.snp.makeConstraints { make in
             make.height.width.equalTo(108)
@@ -99,6 +114,7 @@ final class CartTableViewCell: UITableViewCell {
     }
 
     func configCell(data: Nft) {
+        self.nftID = data.id
         nftImage.kf.setImage(with: data.images[0], placeholder: UIImage(systemName: "photo"))
         nameLabel.text = data.name
         configureRatingStars(with: data.rating)
@@ -106,9 +122,13 @@ final class CartTableViewCell: UITableViewCell {
     }
 
     @objc func deleteItem() {
-        //TODO: Add delete functionality
+        guard let nftID = nftID else {
+            assertionFailure("invalid nftID")
+            return
+        }
+        delegate?.deleteNft(id: nftID)
     }
-
+    
     private func configureRatingStars(with rating: Int) {
         stack.insertArrangedSubview(ratingView, at: 1)
         let totalStars = 5
@@ -126,3 +146,5 @@ final class CartTableViewCell: UITableViewCell {
         }
     }
 }
+
+

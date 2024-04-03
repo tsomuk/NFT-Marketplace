@@ -241,7 +241,7 @@ final class CartViewController: UIViewController {
     }
 }
 
-// MARK: - TableView Datasouce
+    // MARK: - TableView Datasouce
 
 extension CartViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -252,12 +252,33 @@ extension CartViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CartTableViewCell else { return UITableViewCell() }
         let nft = nfts[indexPath.row]
         cell.configCell(data: nft)
+        cell.delegate = self
         cell.backgroundColor = .clear
         return cell
     }
 }
 
-//  MARK: - Additional files (Temperary)
+    // MARK: - DeleteNftDelegate
+
+extension CartViewController: DeleteNftDelegate {
+    func deleteNft(id: String) {
+        nfts.removeAll { $0.id == id }
+        debugPrint("NFT with id: \(id) deleted ❌")
+        
+        //TODO: Add put request with new array of nft
+        
+        servicesAssembly.nftService.updateOrder(nftsIds: nfts.map({$0.id})) { (result: Result<Order, Error>) in
+            switch result {
+            case .success(let order):
+                print("order:", order)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+}
+
+//  MARK: - Additional files (TEMPERARY)
 
 // MARK: - Color+extension
 
