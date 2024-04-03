@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import ProgressHUD
 
 final class CartViewController: UIViewController {
 
@@ -94,11 +95,14 @@ final class CartViewController: UIViewController {
         setupAppearance()
         setupNavBar()
         updateHolders()
-
+        
+        
         tableView.register(CartTableViewCell.self, forCellReuseIdentifier: "cell")
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        tabBarController?.tabBar.isHidden = false
+        navigationController?.setNavigationBarHidden(false, animated: false)
         getOrder()
     }
 
@@ -111,18 +115,21 @@ final class CartViewController: UIViewController {
     }
 
     private func getOrder() {
+        ProgressHUD.show()
+        ProgressHUD.animationType = .circleSpinFade
         if !isLoading {
             isLoading = true
             servicesAssembly.nftService.loadOrder { (result: Result<Order, Error>) in
                 switch result {
                 case .success(let order):
-                    self.isLoading = false
+                    ProgressHUD.dismiss()
                     self.nftOrder = order
                 case .failure(let error):
-                    self.isLoading = false
+                    ProgressHUD.showError()
                     print(error.localizedDescription)
                 }
             }
+            self.isLoading = false
         }
     }
 
@@ -133,13 +140,13 @@ final class CartViewController: UIViewController {
                 servicesAssembly.nftService.loadNft(id: id) { (result: Result<Nft, Error>) in
                     switch result {
                     case .success(let nft):
-                        self.isLoading = false
                         self.nfts.isEmpty ? self.nfts.append(nft) : self.apppendNewNft(nft)
                     case .failure(let error):
                         print(error.localizedDescription)
-                        self.isLoading = false
+                        
                     }
                 }
+                self.isLoading = false
             }
         }
     }
@@ -201,7 +208,7 @@ final class CartViewController: UIViewController {
     }
 
     @objc private func goToPayment() {
-        let paymentViewController = PaymentOptionViewController()
+        let paymentViewController = PaymentOptionViewController(servicesAssembly: servicesAssembly)
         navigationController?.pushViewController(paymentViewController, animated: true)
         navigationController?.navigationBar.tintColor = .nftBlack
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
@@ -241,7 +248,7 @@ extension CartViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CartTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CartTableViewCell else { return UITableViewCell() }
         let nft = nfts[indexPath.row]
         cell.configCell(data: nft)
         cell.backgroundColor = .clear

@@ -2,10 +2,12 @@ import Foundation
 
 typealias NftCompletion = (Result<Nft, Error>) -> Void
 typealias NftOrderCompletion = (Result<Order, Error>) -> Void
+typealias CurrencyListCompletion = (Result<[Currency], Error>) -> Void
 
 protocol NftService {
     func loadNft(id: String, completion: @escaping NftCompletion)
     func loadOrder(completion: @escaping NftOrderCompletion)
+    func loadCurrencyList(completion: @escaping CurrencyListCompletion)
 }
 
 final class NftServiceImpl: NftService {
@@ -42,6 +44,17 @@ final class NftServiceImpl: NftService {
             switch result {
             case .success(let order):
                 completion(.success(order))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func loadCurrencyList(completion: @escaping CurrencyListCompletion) {
+        networkClient.send(request: CurrencyListRequest(), type: [Currency].self) { result in
+            switch result {
+            case .success(let currencies):
+                completion(.success(currencies))
             case .failure(let error):
                 completion(.failure(error))
             }
