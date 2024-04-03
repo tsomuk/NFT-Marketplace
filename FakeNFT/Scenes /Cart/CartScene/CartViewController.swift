@@ -221,21 +221,22 @@ final class CartViewController: UIViewController {
         let actionSheet = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
 
         let priceSort = UIAlertAction(title: "По цене", style: .default) { _ in
-            // TODO: Add price sort
+            self.nfts.sort { $0.price < $1.price }
         }
 
         let ratingSort = UIAlertAction(title: "По рейтингу", style: .default) { _ in
-            // TODO: Add rating sort
+            self.nfts.sort { $0.rating < $1.rating }
         }
 
         let titleSort = UIAlertAction(title: "По названию", style: .default) { _ in
-            // TODO: Add name sort
+            self.nfts.sort { $0.name < $1.name }
         }
 
         let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel) { _ in
         }
         
-        [priceSort,ratingSort,titleSort,cancelAction].forEach { actionSheet.addAction($0)}
+        self.tableView.reloadData()
+        [priceSort,ratingSort,titleSort,cancelAction].forEach { actionSheet.addAction($0) }
         self.present(actionSheet, animated: true, completion: nil)
     }
 }
