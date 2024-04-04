@@ -3,6 +3,8 @@
 Архитектура - MVC 
 Верстка - Кодом (Snapkit)
 
+Ссылка на доску: https://github.com/users/tsomuk/projects/2/views/1
+
 # Cart
 Время на выполение задачи (Планируемое: Фактическое)
 
