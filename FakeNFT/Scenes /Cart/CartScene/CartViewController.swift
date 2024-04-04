@@ -223,11 +223,11 @@ final class CartViewController: UIViewController {
         let actionSheet = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
 
         let priceSort = UIAlertAction(title: "По цене", style: .default) { _ in
-            self.nfts.sort { $0.price < $1.price }
+            self.nfts.sort { $0.price > $1.price }
         }
 
         let ratingSort = UIAlertAction(title: "По рейтингу", style: .default) { _ in
-            self.nfts.sort { $0.rating < $1.rating }
+            self.nfts.sort { $0.rating > $1.rating }
         }
 
         let titleSort = UIAlertAction(title: "По названию", style: .default) { _ in
@@ -266,7 +266,7 @@ extension CartViewController: DeleteNftDelegate {
     func deleteNft(id: String, image: UIImage) {
         let deleteViewController = DeleteViewController(image: image) {
             self.nfts.removeAll { $0.id == id }
-            let newIds = self.nfts.map({$0.id})
+            let newIds = self.nfts.map { $0.id }
             self.servicesAssembly.nftService.updateOrder(nftsIds: newIds) { (result: Result<Order, Error>) in
                 switch result {
                 case .success(let order):
@@ -282,74 +282,5 @@ extension CartViewController: DeleteNftDelegate {
                 deleteViewController.view.alpha = 1
             }
         }
-    }
-}
-
-//  MARK: - Additional files (TEMPERARY)
-
-// MARK: - Color+extension
-
-extension UIColor {
-    static var nftBlack: UIColor { UIColor(named: "nftBlack") ?? UIColor.black }
-    static var nftGreen: UIColor { UIColor(named: "nftGreen") ?? UIColor.green }
-    static var nftRed: UIColor { UIColor(named: "nftRed") ?? UIColor.red }
-    static var nftBlue: UIColor { UIColor(named: "nftBlue") ?? UIColor.blue }
-    static var nftYellow: UIColor { UIColor(named: "nftYellow") ?? UIColor.yellow }
-    static var nftGray: UIColor { UIColor(named: "nftGray") ?? UIColor.darkGray }
-    static var nftLightGray: UIColor { UIColor(named: "nftLightGray") ?? UIColor.gray }
-    static var nftWhite: UIColor { UIColor(named: "nftWhite") ?? UIColor.white }
-}
-
-// MARK: - Images+extension
-
-extension UIImage {
-    //images
-    static var mockNft = UIImage(named: "mockNft") ?? UIImage()
-    //icons
-    static var basketDelete = UIImage(named: "basketDelete") ?? UIImage()
-    static var basketEmpty = UIImage(named: "basketEmpty") ?? UIImage()
-    static var basketFill = UIImage(named: "basketFill") ?? UIImage()
-    static var sort = UIImage(named: "sort") ?? UIImage()
-    static var done = UIImage(named: "Done") ?? UIImage()
-    static var close = UIImage(named: "close") ?? UIImage()
-}
-
-// MARK: - View+extension
-
-extension UIView {
-    func addSubviews(_ views: UIView...) {
-        views.forEach({addSubview($0)})
-    }
-}
-
-// MARK: - Custom UI Elements
-
-final class NFTButton: UIButton {
-    init(title: String) {
-        super.init(frame: .zero)
-        self.setTitle(title, for: .normal)
-        self.layer.cornerRadius = 16
-        self.layer.masksToBounds = true
-        self.backgroundColor = .nftBlack
-        self.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
-        self.setTitleColor(.nftWhite, for: .normal)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-final class NFTTextLabel: UILabel {
-    init(text: String,fontSize: CGFloat, fontColor: UIColor, fontWeight: UIFont.Weight) {
-        super.init(frame: .zero)
-        self.text = text
-        self.numberOfLines = 0
-        self.textColor = fontColor
-        self.font = .systemFont(ofSize: fontSize, weight: fontWeight)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
