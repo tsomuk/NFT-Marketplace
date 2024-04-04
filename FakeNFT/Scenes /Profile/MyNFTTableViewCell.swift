@@ -26,7 +26,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         button.setImage(
             UIImage(systemName: "heart.fill"),
             for: .normal)
-        button.tintColor = UIColor(named: "nftRed")
+        button.tintColor = UIColor(named: "nftLightGray")
         button.setTitleColor(.clear, for: .normal)
         button.addTarget(
             self,
@@ -67,7 +67,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         ])
         verticalStackView.axis = .vertical
         verticalStackView.spacing = 4
-        verticalStackView.alignment = .fill
+        verticalStackView.alignment = .leading
         verticalStackView.distribution = .equalCentering
         return verticalStackView
     }()
@@ -96,6 +96,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         label.textAlignment = .left
         label.textColor = UIColor(named: "nftBlack")
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        label.numberOfLines = 2
         return label
     }()
 
@@ -104,6 +105,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         label.textAlignment = .left
         label.textColor = UIColor(named: "nftBlack")
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        label.numberOfLines = 1
         return label
     }()
 
@@ -151,6 +153,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         }
         myNFTStack4.snp.makeConstraints { make in
             make.top.leading.bottom.equalTo(contentView).inset(16)
+            make.width.equalToSuperview().offset(-16)
         }
     }
 

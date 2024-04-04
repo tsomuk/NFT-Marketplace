@@ -12,9 +12,12 @@ import SnapKit
 final class MyNFTViewController: UIViewController {
 
     // MARK: -  Properties & Constants
-
+    
+    private let servicesAssembly: ServicesAssembly
+    private let networkClient = DefaultNetworkClient()
     private var myNFTs: [NFTInfo] = []
     private var myNFT: NFTInfo?
+    private var profileInfo: ProfileInfo?
 
     private let emptyNFTLabel: UILabel = {
         let label = UILabel()
@@ -30,6 +33,16 @@ final class MyNFTViewController: UIViewController {
         tableView.separatorStyle = .none
         return tableView
     }()
+    
+    init(servicesAssembly: ServicesAssembly, profileInfo: ProfileInfo?) {
+        self.servicesAssembly = servicesAssembly
+        self.profileInfo = profileInfo
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: - Lifecycle
 
@@ -39,39 +52,7 @@ final class MyNFTViewController: UIViewController {
         view.backgroundColor = .systemBackground
         setUpNC()
         setUpView()
-        let mockNFT1 = NFTInfo(
-            createdAt: "2023-04-20T02:22:27Z",
-            name: "Lila",
-            images: ["https://code.s3.yandex.net/Mobile/iOS/NFT/Beige/April/1.png"],
-            rating: 3,
-            description: "I'm the best",
-            price: 1.75,
-            author: "Dina Doe",
-            id: "1"
-        )
-        let mockNFT2 = NFTInfo(
-            createdAt: "2023-04-20T02:22:27Z",
-            name: "Pip",
-            images: ["https://code.s3.yandex.net/Mobile/iOS/NFT/Beige/April/1.png"],
-            rating: 5,
-            description: "I'm the best",
-            price: 0.75,
-            author: "John Doe",
-            id: "2"
-        )
-        let mockNFT3 = NFTInfo(
-            createdAt: "2023-04-20T02:22:27Z",
-            name: "Tita",
-            images: ["https://code.s3.yandex.net/Mobile/iOS/NFT/Beige/April/1.png"],
-            rating: 4,
-            description: "I'm the best",
-            price: 2.75,
-            author: "Justin Doe",
-            id: "3"
-        )
-    myNFTs = [mockNFT1, mockNFT2, mockNFT3]
-
-        updateUI()
+        fetchMyNFTInfo()
     }
 
     // MARK: -  Private Methods
@@ -103,7 +84,7 @@ final class MyNFTViewController: UIViewController {
         myNFTTableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(20)
             make.leading.trailing.bottom.equalToSuperview()
-            make.height.equalTo(140)
+            make.bottom.equalToSuperview()
         }
 
         myNFTTableView.dataSource = self
@@ -112,6 +93,32 @@ final class MyNFTViewController: UIViewController {
 
         myNFTTableView.isHidden = true
         emptyNFTLabel.isHidden = true
+    }
+
+    private func fetchMyNFTInfo() {
+        guard let profileInfo = profileInfo else {
+            print("Profile info is nil")
+            return
+        }
+
+        let nftIds = profileInfo.nfts
+        for nftId in nftIds {
+            networkClient.send(
+                request: MyNFTInfoRequest(userId: "/api/v1/nft/", nftId: nftId),
+                type: NFTInfo.self)
+            { [weak self] result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let myNFTInfo):
+                        self?.myNFTs.append(myNFTInfo)
+                        self?.myNFTTableView.reloadData()
+                        self?.updateUI()
+                    case .failure(let error):
+                        print("Failed to fetch profile info for NFT with ID \(nftId): \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
     }
 
     private func updateUI() {
@@ -222,21 +229,4 @@ extension MyNFTViewController: UITableViewDelegate {
     ) -> CGFloat {
         return 140.0
     }
-}
-
-struct NFTInfo: Decodable {
-    let createdAt: String
-    let name: String
-    let images: [String]
-    let rating: Int
-    let description: String
-    let price: Float
-    let author: String
-    let id: String
-}
-
-enum SortOptionMyNFT {
-    case price
-    case rating
-    case name
 }

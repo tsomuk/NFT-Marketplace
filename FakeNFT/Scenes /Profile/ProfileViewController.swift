@@ -324,7 +324,9 @@ extension ProfileViewController: UITableViewDelegate {
 
     private func showMyNFTScreen() {
         if let navigationController = self.navigationController {
-            let myNFTVC = MyNFTViewController()
+            let myNFTVC = MyNFTViewController(
+                servicesAssembly: servicesAssembly,
+                profileInfo: profileInfo)
             navigationController.pushViewController(myNFTVC, animated: true)
             navBarBackButton()
         }
