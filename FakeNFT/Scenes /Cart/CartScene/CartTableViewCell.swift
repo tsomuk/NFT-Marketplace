@@ -12,7 +12,7 @@ import Kingfisher
 // MARK: - Protocols
 
 protocol DeleteNftDelegate: AnyObject {
-    func deleteNft(id: String)
+    func deleteNft(id: String, image: UIImage)
 }
 
 // MARK: - Class
@@ -126,7 +126,7 @@ final class CartTableViewCell: UITableViewCell {
             assertionFailure("invalid nftID")
             return
         }
-        delegate?.deleteNft(id: nftID)
+        delegate?.deleteNft(id: nftID, image: nftImage.image ?? UIImage())
     }
     
     private func configureRatingStars(with rating: Int) {

@@ -125,11 +125,14 @@ struct DefaultNetworkClient: NetworkClient {
         }
         
         
-        if let dto = request.dto,
-           let dtoEncoded = try? encoder.encode(dto) {
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            urlRequest.httpBody = dtoEncoded
-        }
+        if let formData = request.dto as? [String: String] {
+                    // Transform data in x-www-form-urlencoded
+                    let formDataString = formData.map { key, value in
+                        return "\(key)=\(value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+                    }.joined(separator: "&")
+                    urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+                    urlRequest.httpBody = formDataString.data(using: .utf8)
+                }
 
         return urlRequest
     }

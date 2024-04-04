@@ -30,7 +30,7 @@ final class CartViewController: UIViewController {
 
     private var nftOrder: Order? = nil {
         didSet {
-            getNfts(nftOrder?.nfts ?? [])
+            nftOrder?.nfts.isEmpty ?? true ? nfts.removeAll() : getNfts(nftOrder?.nfts ?? [])
         }
     }
 
@@ -207,6 +207,8 @@ final class CartViewController: UIViewController {
         }
     }
 
+    // MARK: - Move to the next screen
+    
     @objc private func goToPayment() {
         let paymentViewController = PaymentOptionViewController(servicesAssembly: servicesAssembly)
         navigationController?.pushViewController(paymentViewController, animated: true)
@@ -261,18 +263,23 @@ extension CartViewController: UITableViewDataSource {
     // MARK: - DeleteNftDelegate
 
 extension CartViewController: DeleteNftDelegate {
-    func deleteNft(id: String) {
-        nfts.removeAll { $0.id == id }
-        debugPrint("NFT with id: \(id) deleted ❌")
-        
-        //TODO: Add put request with new array of nft
-        
-        servicesAssembly.nftService.updateOrder(nftsIds: nfts.map({$0.id})) { (result: Result<Order, Error>) in
-            switch result {
-            case .success(let order):
-                print("order:", order)
-            case .failure(let error):
-                print(error.localizedDescription)
+    func deleteNft(id: String, image: UIImage) {
+        let deleteViewController = DeleteViewController(image: image) {
+            self.nfts.removeAll { $0.id == id }
+            let newIds = self.nfts.map({$0.id})
+            self.servicesAssembly.nftService.updateOrder(nftsIds: newIds) { (result: Result<Order, Error>) in
+                switch result {
+                case .success(let order):
+                    self.nftOrder = order
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+        deleteViewController.modalPresentationStyle = .overCurrentContext
+        present(deleteViewController, animated: false) {
+            UIView.animate(withDuration: 0.3) {
+                deleteViewController.view.alpha = 1
             }
         }
     }

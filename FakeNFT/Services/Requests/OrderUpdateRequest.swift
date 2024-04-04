@@ -11,9 +11,18 @@ import Foundation
 import Foundation
 
 struct OrderUpdateRequest: NetworkRequest {
-    var headers: [String: String]? = ["X-Practicum-Mobile-Token": "b351241e-2dec-4598-9abd-083d84e52843"]
+    let newOrder: NewOrderModel
     
-    var dto: NewOrderModel?
+    var httpMethod: HttpMethod = .put
+    
+    var dto: (any Encodable)? {
+        let formData: [String: String] = [
+            "nfts": newOrder.nfts.joined(separator: ", ")
+        ]
+        return formData
+    }
+    
+    var headers: [String: String]? = ["X-Practicum-Mobile-Token": "b351241e-2dec-4598-9abd-083d84e52843"]
     
     var endpoint: URL? {
         URL(string: "\(RequestConstants.baseURL)/api/v1/orders/1")

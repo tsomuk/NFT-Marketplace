@@ -29,7 +29,6 @@ final class PaymentOptionViewController: UIViewController {
     private var isLoading = false
     private var currencies : [Currency] = [] {
         didSet {
-            print(currencies)
             collectionView.reloadData()
         }
     }

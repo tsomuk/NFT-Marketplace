@@ -8,6 +8,10 @@
 import UIKit
 
 final class DeleteViewController: UIViewController {
+    
+    private var deleteAction: () -> ()
+    private var image: UIImage
+    
 
     private lazy var deleteButton: UIButton = {
         let deleteButton = NFTButton(title: "Удалить")
@@ -26,7 +30,7 @@ final class DeleteViewController: UIViewController {
 
     private lazy var nftImage: UIImageView = {
         let nftImage = UIImageView()
-        nftImage.image = UIImage(named: "paymentHolder")
+        nftImage.image = image
         nftImage.contentMode = .scaleAspectFit
         return nftImage
     }()
@@ -53,6 +57,17 @@ final class DeleteViewController: UIViewController {
         vStack.alignment = .leading
         return vStack
     }()
+    
+    init(image: UIImage, deleteAction: @escaping () -> ()) {
+            self.deleteAction = deleteAction
+            self.image = image
+            super.init(nibName: nil, bundle: nil)
+            self.view.alpha = 0
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,10 +105,19 @@ final class DeleteViewController: UIViewController {
     }
     
     @objc private func deleteTapped() {
-        // TODO: Add delete functionality
+            UIView.animate(withDuration: 0.3) {
+                self.view.alpha = 0
+            } completion: { _ in
+                self.dismiss(animated: true)
+            }
+            deleteAction()
+        }
+        
+        @objc private func cancelTapped() {
+            UIView.animate(withDuration: 0.3) {
+                self.view.alpha = 0
+            } completion: { _ in
+                self.dismiss(animated: true)
+            }
+        }
     }
-    
-    @objc private func cancelTapped() {
-        dismiss(animated: true)
-    }
-}

@@ -9,7 +9,7 @@ protocol NftService {
     func loadOrder(completion: @escaping NftOrderCompletion)
     func loadCurrencyList(completion: @escaping CurrencyListCompletion)
     func updateOrder(nftsIds: [String], completion: @escaping NftOrderCompletion)
-
+    
 }
 
 final class NftServiceImpl: NftService {
@@ -61,10 +61,10 @@ final class NftServiceImpl: NftService {
             }
         }
     }
-        
+    
     func updateOrder(nftsIds: [String], completion: @escaping NftOrderCompletion) {
-        var request = OrderUpdateRequest()
-        request.dto?.nfts = nftsIds
+        let newOrderModel = NewOrderModel(nfts: nftsIds)
+        var request = OrderUpdateRequest(newOrder: newOrderModel)
         networkClient.send(request: request, type: Order.self) { result in
             switch result {
             case .success(let order):
@@ -74,5 +74,4 @@ final class NftServiceImpl: NftService {
             }
         }
     }
-
 }
