@@ -30,8 +30,10 @@ final class DeleteViewController: UIViewController {
 
     private lazy var nftImage: UIImageView = {
         let nftImage = UIImageView()
-        nftImage.image = image
         nftImage.contentMode = .scaleAspectFit
+        nftImage.layer.cornerRadius = 12
+        nftImage.layer.masksToBounds = true
+        nftImage.image = image
         return nftImage
     }()
 
@@ -51,7 +53,7 @@ final class DeleteViewController: UIViewController {
     }()
 
     private lazy var vStack: UIStackView = {
-        let vStack = UIStackView(arrangedSubviews: [nftImage, conformationLabel, buttonStack])
+        let vStack = UIStackView(arrangedSubviews: [conformationLabel, buttonStack])
         vStack.axis = .vertical
         vStack.spacing = 15
         vStack.alignment = .leading
@@ -83,12 +85,20 @@ final class DeleteViewController: UIViewController {
 
     private func setupAppearance() {
         view.backgroundColor = .clear
+        view.addSubview(nftImage)
         view.addSubview(vStack)
 
         conformationLabel.textAlignment = .center
 
+        nftImage.snp.makeConstraints { make in
+            make.width.height.equalTo(108)
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(vStack.snp_topMargin).offset(-15)
+        }
+        
         vStack.snp.makeConstraints { make in
-            make.centerY.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(61.5)
+            make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(36)
         }
 
@@ -96,11 +106,6 @@ final class DeleteViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(36)
             make.height.equalTo(44)
-        
-            nftImage.snp.makeConstraints { make in
-                make.height.equalTo(108)
-                make.centerX.equalToSuperview()
-            }
         }
     }
     

@@ -276,7 +276,7 @@ extension CartViewController: DeleteNftDelegate {
                 }
             }
         }
-        deleteViewController.modalPresentationStyle = .overCurrentContext
+        deleteViewController.modalPresentationStyle = .overFullScreen
         present(deleteViewController, animated: false) {
             UIView.animate(withDuration: 0.3) {
                 deleteViewController.view.alpha = 1
