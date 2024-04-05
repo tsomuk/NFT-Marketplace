@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SnapKit
+import ProgressHUD
 
 final class MyNFTViewController: UIViewController {
 
@@ -96,8 +97,12 @@ final class MyNFTViewController: UIViewController {
     }
 
     private func fetchMyNFTInfo() {
+        setUpProgressHUD()
+        ProgressHUD.show()
+
         guard let profileInfo = profileInfo else {
             print("Profile info is nil")
+            ProgressHUD.dismiss()
             return
         }
 
@@ -119,6 +124,14 @@ final class MyNFTViewController: UIViewController {
                 }
             }
         }
+        ProgressHUD.dismiss()
+    }
+
+    private func setUpProgressHUD() {
+        ProgressHUD.animationType = .circleStrokeSpin
+        ProgressHUD.colorBackground = .clear
+        ProgressHUD.colorAnimation = UIColor(named: "nftBlack") ?? .black
+        ProgressHUD.colorProgress = UIColor(named: "nftLightGray") ?? .lightGray
     }
 
     private func updateUI() {
