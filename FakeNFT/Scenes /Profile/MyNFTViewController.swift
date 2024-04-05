@@ -22,7 +22,7 @@ final class MyNFTViewController: UIViewController {
 
     private let emptyNFTLabel: UILabel = {
         let label = UILabel()
-        label.text = "У Вас еще нет NFT"
+        label.text = NSLocalizedString("ProfileMyNFT.emptyNFTLabel", comment: "")
         label.textAlignment = .center
         label.textColor = UIColor(named: "nftBlack")
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -59,7 +59,7 @@ final class MyNFTViewController: UIViewController {
     // MARK: -  Private Methods
 
     private func setUpNC() {
-        title = "Мои NFT"
+        title = NSLocalizedString("ProfileMyNFT.navbarTitle", comment: "")
         navigationItem.backBarButtonItem = UIBarButtonItem(
             title: "",
             style: .plain,
@@ -146,29 +146,29 @@ final class MyNFTViewController: UIViewController {
 
     private func showDeleteAlert() {
         let alertModel = AlertModel(
-            title: "Сортировка",
+            title: NSLocalizedString("ProfileMyNFT.sortAlertTitle", comment: ""),
             message: nil,
             primaryButton: AlertButton(
-                buttonText: "По цене",
+                buttonText: NSLocalizedString("ProfileMyNFT.priceAlertOption", comment: ""),
                 completion: { [weak self] in
                     self?.sortMyNFT(by: .price)
                 }
             ),
             additionalButtons: [
                 AlertButton(
-                    buttonText: "По рейтингу",
+                    buttonText: NSLocalizedString("ProfileMyNFT.ratingAlertOption", comment: ""),
                     completion: { [weak self] in
                         self?.sortMyNFT(by: .rating)
                     }
                 ),
                 AlertButton(
-                    buttonText: "По названию",
+                    buttonText: NSLocalizedString("ProfileMyNFT.nameAlertOption", comment: ""),
                     completion: { [weak self] in
                         self?.sortMyNFT(by: .name)
                     }
                 ),
                 AlertButton(
-                    buttonText: "Закрыть",
+                    buttonText: NSLocalizedString("ProfileMyNFT.closeAlertOption", comment: ""),
                     completion: nil
                 )
             ]

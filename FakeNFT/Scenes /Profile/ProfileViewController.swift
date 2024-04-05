@@ -280,13 +280,17 @@ extension ProfileViewController: UITableViewDataSource {
         cell.tintColor = UIColor(named: "nftBlack")
         cell.selectionStyle = .none
 
+        let myNFTTitle = NSLocalizedString("ProfileMain.table.myNFT", comment: "")
+        let myChosenNFTTitle = NSLocalizedString("ProfileMain.table.myChosenNFT", comment: "")
+        let aboutDev = NSLocalizedString("ProfileMain.table.DevInfo", comment: "")
+        
         switch indexPath.section {
         case 0:
-            cell.setTitleLabel(text: "Мои NFT (\(numberOfMyNFT))")
+            cell.setTitleLabel(text: "\(myNFTTitle) (\(numberOfMyNFT))")
         case 1:
-            cell.setTitleLabel(text: "Избранные NFT (\(numberOfChosenNFT))")
+            cell.setTitleLabel(text: "\(myChosenNFTTitle) (\(numberOfChosenNFT))")
         case 2:
-            cell.setTitleLabel(text: "О разработчике")
+            cell.setTitleLabel(text: "\(aboutDev)")
         default:
             break
         }

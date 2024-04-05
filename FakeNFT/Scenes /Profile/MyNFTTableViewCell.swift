@@ -111,7 +111,7 @@ final class MyNFTTableViewCell: UITableViewCell {
 
     private let priceLabel: UILabel = {
         let label = UILabel()
-        label.text = "Цена"
+        label.text = NSLocalizedString("ProfileMyNFTCell.priceLabel", comment: "")
         label.textAlignment = .left
         label.textColor = UIColor(named: "nftBlack")
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
