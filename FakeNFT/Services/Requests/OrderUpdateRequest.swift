@@ -7,9 +7,6 @@
 
 import Foundation
 
-
-import Foundation
-
 struct OrderUpdateRequest: NetworkRequest {
     let newOrder: NewOrderModel
     

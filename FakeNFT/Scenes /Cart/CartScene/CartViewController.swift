@@ -25,7 +25,7 @@ final class CartViewController: UIViewController {
     }
 
     // MARK: - Private varibles
-    
+
     private var isLoading = false
 
     private var nftOrder: Order? = nil {
@@ -95,7 +95,6 @@ final class CartViewController: UIViewController {
         setupAppearance()
         setupNavBar()
         updateHolders()
-        
         
         tableView.register(CartTableViewCell.self, forCellReuseIdentifier: "cell")
     }

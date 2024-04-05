@@ -9,7 +9,6 @@ protocol NftService {
     func loadOrder(completion: @escaping NftOrderCompletion)
     func loadCurrencyList(completion: @escaping CurrencyListCompletion)
     func updateOrder(nftsIds: [String], completion: @escaping NftOrderCompletion)
-    
 }
 
 final class NftServiceImpl: NftService {

@@ -128,7 +128,7 @@ final class CartTableViewCell: UITableViewCell {
         }
         delegate?.deleteNft(id: nftID, image: nftImage.image ?? UIImage())
     }
-    
+
     private func configureRatingStars(with rating: Int) {
         stack.insertArrangedSubview(ratingView, at: 1)
         let totalStars = 5
@@ -146,5 +146,3 @@ final class CartTableViewCell: UITableViewCell {
         }
     }
 }
-
-
