@@ -7,8 +7,31 @@
 
 
 import UIKit
+import ProgressHUD
 
 final class PaymentOptionViewController: UIViewController {
+    
+    // MARK: - ServicesAssembly
+
+    let servicesAssembly: ServicesAssembly
+
+    init(servicesAssembly: ServicesAssembly) {
+        self.servicesAssembly = servicesAssembly
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Private varibles
+    
+    private var isLoading = false
+    private var currencies : [Currency] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
 
     private lazy var payButton: UIButton = {
         let payButton = NFTButton(title: "Оплатить")
@@ -67,6 +90,7 @@ final class PaymentOptionViewController: UIViewController {
         super.viewDidLoad()
         
         setupAppearance()
+        getCurrencyList()
     }
 
     @objc private func goToPaymentResult() {
@@ -106,16 +130,35 @@ final class PaymentOptionViewController: UIViewController {
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-16)
         }
     }
+    
+    private func getCurrencyList() {
+        ProgressHUD.show()
+        ProgressHUD.animationType = .circleSpinFade
+        if !isLoading {
+            isLoading = true
+            servicesAssembly.nftService.loadCurrencyList { (result: Result<[Currency], Error>) in
+                switch result {
+                case .success(let currencies):
+                    ProgressHUD.dismiss()
+                    self.currencies = currencies
+                case .failure(let error):
+                    ProgressHUD.showError()
+                    print(error.localizedDescription)
+                }
+            }
+            self.isLoading = false
+        }
+    }
 }
 
 extension PaymentOptionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        Currency.mockCurrency.count
+        currencies.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PaymentViewCell else { return UICollectionViewCell() }
-        let currency = Currency.mockCurrency[indexPath.item]
+        let currency = currencies[indexPath.item]
         cell.configureCell(currency: currency)
         cell.backgroundColor = .nftLightGray
         cell.layer.cornerRadius = 12

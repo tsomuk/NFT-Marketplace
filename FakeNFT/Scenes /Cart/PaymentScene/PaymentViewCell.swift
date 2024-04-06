@@ -7,6 +7,7 @@
 
 
 import UIKit
+import Kingfisher
 
 final class PaymentViewCell: UICollectionViewCell {
 
@@ -39,7 +40,7 @@ final class PaymentViewCell: UICollectionViewCell {
     func configureCell(currency: Currency){
         currencyTitle.text = currency.title
         currencySymbol.text = currency.name
-        currencyImage.image = currency.image
+        currencyImage.kf.setImage(with: currency.image, placeholder: UIImage(systemName: "bitcoinsign.arrow.circlepath"))
     }
 
     private func setupAppearance() {
