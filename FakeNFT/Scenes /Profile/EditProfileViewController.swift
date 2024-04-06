@@ -69,9 +69,9 @@ final class EditProfileViewController: UIViewController {
 
     private lazy var editProfileStackMain: UIStackView = {
         let verticalStackView = UIStackView(arrangedSubviews: [
-            editProfileStack1,
-            editProfileStack2,
-            editProfileStack3
+            editProfileStackLabel,
+            editProfileStackBio,
+            editProfileStackSite
         ])
         verticalStackView.axis = .vertical
         verticalStackView.spacing = 24
@@ -80,7 +80,7 @@ final class EditProfileViewController: UIViewController {
         return verticalStackView
     }()
 
-    private lazy var editProfileStack1: UIStackView = {
+    private lazy var editProfileStackLabel: UIStackView = {
         let verticalStackView = UIStackView(arrangedSubviews: [
             nameLabel,
             nameTextField
@@ -92,7 +92,7 @@ final class EditProfileViewController: UIViewController {
         return verticalStackView
     }()
 
-    private lazy var editProfileStack2: UIStackView = {
+    private lazy var editProfileStackBio: UIStackView = {
         let verticalStackView = UIStackView(arrangedSubviews: [
             bioLabel,
             bioTextField
@@ -104,7 +104,7 @@ final class EditProfileViewController: UIViewController {
         return verticalStackView
     }()
 
-    private lazy var editProfileStack3: UIStackView = {
+    private lazy var editProfileStackSite: UIStackView = {
         let verticalStackView = UIStackView(arrangedSubviews: [
             siteLabel,
             siteTextField

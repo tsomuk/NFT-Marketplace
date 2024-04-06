@@ -35,10 +35,10 @@ final class MyNFTTableViewCell: UITableViewCell {
         return button
     }()
 
-    private lazy var myNFTStack4: UIStackView = {
+    private lazy var myNFTStackImageInfoPrice: UIStackView = {
         let horizontalStackView = UIStackView(arrangedSubviews: [
             myNFTImage,
-            myNFTStack3
+            myNFTStackInfoPrice
         ])
         horizontalStackView.axis = .horizontal
         horizontalStackView.spacing = 20
@@ -47,10 +47,10 @@ final class MyNFTTableViewCell: UITableViewCell {
         return horizontalStackView
     }()
 
-    private lazy var myNFTStack3: UIStackView = {
+    private lazy var myNFTStackInfoPrice: UIStackView = {
         let horizontalStackView = UIStackView(arrangedSubviews: [
-            myNFTStack1,
-            myNFTStack2
+            myNFTStackNameRatingAuthor,
+            myNFTStackPrice
         ])
         horizontalStackView.axis = .horizontal
         horizontalStackView.spacing = 39
@@ -59,7 +59,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         return horizontalStackView
     }()
 
-    private lazy var myNFTStack1: UIStackView = {
+    private lazy var myNFTStackNameRatingAuthor: UIStackView = {
         let verticalStackView = UIStackView(arrangedSubviews: [
             myNFTNameLabel,
             myNFTStarsStackView,
@@ -72,7 +72,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         return verticalStackView
     }()
 
-    private lazy var myNFTStack2: UIStackView = {
+    private lazy var myNFTStackPrice: UIStackView = {
         let verticalStackView = UIStackView(arrangedSubviews: [
             priceLabel,
             myNFTPriceLabel
@@ -96,7 +96,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         label.textAlignment = .left
         label.textColor = UIColor(named: "nftBlack")
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        label.numberOfLines = 2
+        label.numberOfLines = 1
         return label
     }()
 
@@ -140,7 +140,7 @@ final class MyNFTTableViewCell: UITableViewCell {
     // MARK: -  Private Methods
 
     private func setUpView() {
-        contentView.addSubview(myNFTStack4)
+        contentView.addSubview(myNFTStackImageInfoPrice)
         contentView.addSubview(likeButton)
 
         myNFTImage.snp.makeConstraints { make in
@@ -151,7 +151,7 @@ final class MyNFTTableViewCell: UITableViewCell {
             make.trailing.equalTo(myNFTImage.snp.trailing)
             make.top.equalTo(myNFTImage.snp.top)
         }
-        myNFTStack4.snp.makeConstraints { make in
+        myNFTStackImageInfoPrice.snp.makeConstraints { make in
             make.top.leading.bottom.equalTo(contentView).inset(16)
             make.width.equalToSuperview().offset(-16)
         }
@@ -159,7 +159,7 @@ final class MyNFTTableViewCell: UITableViewCell {
 
     func configureMyNFT(with NFT: NFTInfo) {
         myNFTNameLabel.text = NFT.name
-        myNFTAuthorLabel.text = NFT.author
+        myNFTAuthorLabel.text = "\(NSLocalizedString("ProfileMyNFTCell.authorLabel", comment: "")) \(NFT.author)"
         myNFTPriceLabel.text = "\(NFT.price) ETH"
         configureRatingStars(with: NFT.rating)
 

@@ -26,5 +26,5 @@
 "ProfileMyNFT.nameAlertOption" = "По названию";
 "ProfileMyNFT.closeAlertOption" = "Закрыть";
 "ProfileMyNFTCell.priceLabel" = "Цена";
-
+"ProfileMyNFTCell.authorLabel" = "от";
 

@@ -16,9 +16,9 @@ final class MyNFTViewController: UIViewController {
     
     private let servicesAssembly: ServicesAssembly
     private let networkClient = DefaultNetworkClient()
+    private let profileInfo: ProfileInfo?
     private var myNFTs: [NFTInfo] = []
     private var myNFT: NFTInfo?
-    private var profileInfo: ProfileInfo?
 
     private let emptyNFTLabel: UILabel = {
         let label = UILabel()
@@ -135,13 +135,8 @@ final class MyNFTViewController: UIViewController {
     }
 
     private func updateUI() {
-        if myNFTs.isEmpty {
-            myNFTTableView.isHidden = true
-            emptyNFTLabel.isHidden = false
-        } else {
-            myNFTTableView.isHidden = false
-            emptyNFTLabel.isHidden = true
-        }
+        myNFTTableView.isHidden = myNFTs.isEmpty
+        emptyNFTLabel.isHidden = !myNFTs.isEmpty
     }
 
     private func showDeleteAlert() {
@@ -180,7 +175,7 @@ final class MyNFTViewController: UIViewController {
     private func sortMyNFT(by sortOption: SortOptionMyNFT) {
         switch sortOption {
         case .price:
-            myNFTs.sort { $0.price < $1.price }
+            myNFTs.sort { $0.price > $1.price }
         case .rating:
             myNFTs.sort { $0.rating > $1.rating }
         case .name:
