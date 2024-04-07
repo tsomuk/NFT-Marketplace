@@ -124,7 +124,6 @@ struct DefaultNetworkClient: NetworkClient {
             }
         }
         
-        
         if let formData = request.dto as? [String: String] {
             // Transform data in x-www-form-urlencoded
             let formDataString = formData.map { key, value in

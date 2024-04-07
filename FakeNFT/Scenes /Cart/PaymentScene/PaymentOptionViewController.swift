@@ -27,7 +27,12 @@ final class PaymentOptionViewController: UIViewController {
     // MARK: - Private varibles
     
     private var isLoading = false
-    private var currencyID = ""
+    private var currencyID = "" {
+        didSet {
+            payButton.alpha = 1
+            payButton.isEnabled = true
+        }
+    }
     
     private var currencies : [Currency] = [] {
         didSet {
@@ -37,6 +42,8 @@ final class PaymentOptionViewController: UIViewController {
     
     private lazy var payButton: UIButton = {
         let payButton = NFTButton(title: "Оплатить")
+        payButton.alpha = 0.5
+        payButton.isEnabled = false
         payButton.addTarget(self, action: #selector(goToPaymentResult), for: .touchUpInside)
         return payButton
     }()
@@ -71,12 +78,12 @@ final class PaymentOptionViewController: UIViewController {
         return collectionView
     }()
     
-    private let userAgreementButton: UIButton = {
+    private lazy var userAgreementButton: UIButton = {
         let userAgreementButton = UIButton()
         userAgreementButton.setTitle("Пользовательского соглашения", for: .normal)
         userAgreementButton.setTitleColor(.nftBlue, for: .normal)
         userAgreementButton.titleLabel?.font = .systemFont(ofSize: 13)
-        userAgreementButton.addTarget(PaymentOptionViewController.self, action: #selector(showUserAgreement), for: .touchUpInside)
+        userAgreementButton.addTarget(self, action: #selector(showUserAgreement), for: .touchUpInside)
         return userAgreementButton
     }()
     
@@ -181,7 +188,6 @@ final class PaymentOptionViewController: UIViewController {
         servicesAssembly.nftService.paymentConfirmationRequest(currencyId: id) {(result: Result<PaymentConfirmation, Error>) in
             switch result {
             case .success(let payment):
-                print(payment)
                 let paymentResult = PaymentResultViewController(servicesAssembly: self.servicesAssembly)
                 self.navigationController?.pushViewController(paymentResult, animated: true)
             case .failure(let error):
@@ -191,18 +197,18 @@ final class PaymentOptionViewController: UIViewController {
         }
     }
 }
-        
-    // MARK: - UICollectionViewDataSource & Delegate
+
+// MARK: - UICollectionViewDataSource & Delegate
 
 extension PaymentOptionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         currencies.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PaymentViewCell else { return UICollectionViewCell() }
         let currency = currencies[indexPath.item]
-       
+        
         cell.configureCell(currency: currency)
         cell.backgroundColor = .nftLightGray
         cell.layer.cornerRadius = 12
@@ -218,7 +224,7 @@ extension PaymentOptionViewController: UICollectionViewDelegate {
         cell?.layer.cornerRadius = 12
         cell?.layer.borderColor = UIColor.nftBlack.cgColor
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as? PaymentViewCell
         cell?.layer.borderWidth = 0
@@ -235,15 +241,15 @@ extension PaymentOptionViewController: UICollectionViewDelegateFlowLayout {
         let height : CGFloat = 46
         return CGSize(width: width , height: height)
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 7
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 7
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 20, left: 16, bottom: 10, right: 16)
     }

@@ -18,19 +18,19 @@ protocol DeleteNftDelegate: AnyObject {
 // MARK: - Class
 
 final class CartTableViewCell: UITableViewCell {
-
-// MARK: - Init
+    
+    // MARK: - Init
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupAppearance()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-// MARK: - Varibles
+    
+    // MARK: - Varibles
     
     weak var delegate: DeleteNftDelegate?
     private var nftID: String?
@@ -41,32 +41,32 @@ final class CartTableViewCell: UITableViewCell {
         nftImage.layer.masksToBounds = true
         return nftImage
     }()
-
+    
     private lazy var nameLabel: UILabel = {
         let nameLabel = UILabel()
         nameLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         return nameLabel
     }()
-
+    
     private lazy var ratingView: UIStackView = {
         let ratingView = UIStackView()
         return ratingView
     }()
-
+    
     private lazy var priceLabel: UILabel = {
         let priceLabel = UILabel()
         priceLabel.text = "Цена"
         priceLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         return priceLabel
     }()
-
+    
     private lazy var priceValueLabel: UILabel = {
         let priceValueLabel = UILabel()
-
+        
         priceValueLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         return priceValueLabel
     }()
-
+    
     private lazy var stack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [nameLabel, priceLabel, priceValueLabel])
         stack.axis = .vertical
@@ -74,7 +74,7 @@ final class CartTableViewCell: UITableViewCell {
         stack.spacing = 5
         return stack
     }()
-
+    
     private lazy var deleteButton = {
         let removeButton = UIButton()
         removeButton.setImage(.basketDelete, for: .normal)
@@ -83,7 +83,7 @@ final class CartTableViewCell: UITableViewCell {
         return removeButton
     }()
     
-// MARK: - Methods
+    // MARK: - Methods
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -91,28 +91,28 @@ final class CartTableViewCell: UITableViewCell {
             view.removeFromSuperview()
         }
     }
-
+    
     private func setupAppearance() {
         contentView.addSubviews(nftImage, stack, deleteButton)
-
+        
         nftImage.snp.makeConstraints { make in
             make.height.width.equalTo(108)
             make.leading.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
         }
-
+        
         stack.snp.makeConstraints { make in
             make.leading.equalTo(nftImage.snp.trailing).offset(40)
             make.centerY.equalToSuperview()
         }
-
+        
         deleteButton.snp.makeConstraints { make in
             make.height.width.equalTo(40)
             make.trailing.equalToSuperview().offset(-16)
             make.centerY.equalToSuperview()
         }
     }
-
+    
     func configCell(data: Nft) {
         self.nftID = data.id
         nftImage.kf.setImage(with: data.images[0], placeholder: UIImage(systemName: "photo"))
@@ -120,7 +120,7 @@ final class CartTableViewCell: UITableViewCell {
         configureRatingStars(with: data.rating)
         priceValueLabel.text = "\(data.price) ETH"
     }
-
+    
     @objc func deleteItem() {
         guard let nftID = nftID else {
             assertionFailure("invalid nftID")
@@ -128,7 +128,7 @@ final class CartTableViewCell: UITableViewCell {
         }
         delegate?.deleteNft(id: nftID, image: nftImage.image ?? UIImage())
     }
-
+    
     private func configureRatingStars(with rating: Int) {
         stack.insertArrangedSubview(ratingView, at: 1)
         let totalStars = 5

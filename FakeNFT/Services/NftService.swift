@@ -77,7 +77,7 @@ final class NftServiceImpl: NftService {
     }
     
     func paymentConfirmationRequest(currencyId: String, completion: @escaping PaymentCompletion) {
-
+        
         let request = PaymentConfirmationRequest(currencyId: currencyId)
         networkClient.send(request: request, type: PaymentConfirmation.self) { result in
             switch result {
@@ -89,5 +89,3 @@ final class NftServiceImpl: NftService {
         }
     }
 }
-
-

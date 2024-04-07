@@ -13,4 +13,3 @@ protocol NetworkRequest {
     var dto: Encodable? { get }
     var headers: [String: String]? { get }
 }
-    

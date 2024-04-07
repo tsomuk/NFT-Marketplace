@@ -69,7 +69,6 @@ class PaymentResultViewController: UIViewController {
         self.servicesAssembly.nftService.updateOrder(nftsIds: [], isPaymentDone: true) { (result: Result<Order, Error>) in
             switch result {
             case .success(let order):
-                print(order)
                 self.tabBarController?.selectedIndex = 1
                 self.navigationController?.popToRootViewController(animated: true)
             case .failure(let error):
@@ -77,7 +76,7 @@ class PaymentResultViewController: UIViewController {
             }
         }
     }
-     
+    
     private func setupAppearance() {
         
         view.backgroundColor = .nftWhite
