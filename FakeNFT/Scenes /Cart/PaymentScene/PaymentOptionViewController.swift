@@ -12,33 +12,35 @@ import ProgressHUD
 final class PaymentOptionViewController: UIViewController {
     
     // MARK: - ServicesAssembly
-
+    
     let servicesAssembly: ServicesAssembly
-
+    
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     // MARK: - Private varibles
     
     private var isLoading = false
+    private var currencyID = "" 
+    
     private var currencies : [Currency] = [] {
         didSet {
             collectionView.reloadData()
         }
     }
-
+    
     private lazy var payButton: UIButton = {
         let payButton = NFTButton(title: "Оплатить")
         payButton.addTarget(self, action: #selector(goToPaymentResult), for: .touchUpInside)
         return payButton
     }()
-
+    
     private lazy var backgroundView: UIView = {
         let backgroundView = UIView()
         backgroundView.backgroundColor = .nftLightGray
@@ -47,14 +49,14 @@ final class PaymentOptionViewController: UIViewController {
         backgroundView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         return backgroundView
     }()
-
+    
     private let userAgreementLabel = NFTTextLabel(
         text: "Совершая покупку, вы соглашаетесь с условиями",
         fontSize: 13,
         fontColor: .nftBlack,
         fontWeight: .regular
     )
-
+    
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -68,7 +70,7 @@ final class PaymentOptionViewController: UIViewController {
         collectionView.register(PaymentViewCell.self, forCellWithReuseIdentifier: "cell")
         return collectionView
     }()
-
+    
     private let userAgreementButton: UIButton = {
         let userAgreementButton = UIButton()
         userAgreementButton.setTitle("Пользовательского соглашения", for: .normal)
@@ -77,7 +79,7 @@ final class PaymentOptionViewController: UIViewController {
         userAgreementButton.addTarget(self, action: #selector(showUserAgreement), for: .touchUpInside)
         return userAgreementButton
     }()
-
+    
     private lazy var vStack: UIStackView = {
         let vStack = UIStackView(arrangedSubviews: [userAgreementLabel, userAgreementButton])
         vStack.axis = .vertical
@@ -85,51 +87,56 @@ final class PaymentOptionViewController: UIViewController {
         vStack.alignment = .leading
         return vStack
     }()
-
+    
+    // MARK: - Life cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupAppearance()
         getCurrencyList()
     }
-
+    
+    // MARK: - Private methods
+    
     @objc private func goToPaymentResult() {
-        let paymentResult = PaymentResultViewController()
-        navigationController?.pushViewController(paymentResult, animated: true)
+        paymentConfirmationRequest(for: currencyID)
     }
-
+    
     @objc private func showUserAgreement() {
         let webViewViewController = WebViewViewController()
         present(webViewViewController, animated: true)
     }
-
+    
     private func setupAppearance() {
         title = "Выберите способ оплаты"
         view.backgroundColor = .nftWhite
         tabBarController?.tabBar.isHidden = true
         view.addSubviews(collectionView,backgroundView,payButton,vStack)
-
+        
         collectionView.snp.makeConstraints { make in
             make.leading.trailing.top.equalTo(view.safeAreaLayoutGuide)
             make.bottom.equalTo(backgroundView.snp.top)
         }
-
+        
         vStack.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalTo(payButton.snp_topMargin).offset(-16)
         }
-
+        
         backgroundView.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
             make.height.equalTo(186)
         }
-
+        
         payButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(60)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-16)
         }
     }
+    
+    // MARK: - Network
     
     private func getCurrencyList() {
         ProgressHUD.show()
@@ -149,7 +156,22 @@ final class PaymentOptionViewController: UIViewController {
             self.isLoading = false
         }
     }
+    
+    private func paymentConfirmationRequest(for id: String) {
+        servicesAssembly.nftService.paymentConfirmationRequest(currencyId: id) {(result: Result<PaymentConfirmation, Error>) in
+            switch result {
+            case .success(let payment):
+                print(payment)
+                let paymentResult = PaymentResultViewController()
+                self.navigationController?.pushViewController(paymentResult, animated: true)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
 }
+        
+    // MARK: - UICollectionViewDataSource & Delegate
 
 extension PaymentOptionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -159,6 +181,7 @@ extension PaymentOptionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PaymentViewCell else { return UICollectionViewCell() }
         let currency = currencies[indexPath.item]
+       
         cell.configureCell(currency: currency)
         cell.backgroundColor = .nftLightGray
         cell.layer.cornerRadius = 12
@@ -169,6 +192,7 @@ extension PaymentOptionViewController: UICollectionViewDataSource {
 extension PaymentOptionViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as? PaymentViewCell
+        currencyID = currencies[indexPath.item].id
         cell?.layer.borderWidth = 1
         cell?.layer.cornerRadius = 12
         cell?.layer.borderColor = UIColor.nftBlack.cgColor
@@ -179,6 +203,8 @@ extension PaymentOptionViewController: UICollectionViewDelegate {
         cell?.layer.borderWidth = 0
     }
 }
+
+// MARK: - UICollectionViewDelegateFlowLayout
 
 extension PaymentOptionViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
