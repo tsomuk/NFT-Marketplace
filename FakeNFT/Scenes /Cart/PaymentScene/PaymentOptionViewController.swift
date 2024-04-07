@@ -175,9 +175,8 @@ final class PaymentOptionViewController: UIViewController {
                 case .success(let currencies):
                     ProgressHUD.dismiss()
                     self.currencies = currencies
-                case .failure(let error):
+                case .failure:
                     ProgressHUD.showError()
-                    print(error.localizedDescription)
                 }
             }
             self.isLoading = false
@@ -187,12 +186,11 @@ final class PaymentOptionViewController: UIViewController {
     private func paymentConfirmationRequest(for id: String) {
         servicesAssembly.nftService.paymentConfirmationRequest(currencyId: id) {(result: Result<PaymentConfirmation, Error>) in
             switch result {
-            case .success(let payment):
+            case .success:
                 let paymentResult = PaymentResultViewController(servicesAssembly: self.servicesAssembly)
                 self.navigationController?.pushViewController(paymentResult, animated: true)
-            case .failure(let error):
+            case .failure:
                 self.showUnsuccessfulPaymentAlert()
-                print(error.localizedDescription)
             }
         }
     }

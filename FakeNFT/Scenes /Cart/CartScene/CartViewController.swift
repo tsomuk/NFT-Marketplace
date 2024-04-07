@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import ProgressHUD
 
-final class CartViewController: UIViewController {
+final class CartViewController: UIViewController, ErrorView {
     
     // MARK: - ServicesAssembly
     
@@ -107,6 +107,7 @@ final class CartViewController: UIViewController {
         navigationController?.setNavigationBarHidden(false, animated: false)
         tableView.alpha = 0
         getOrder()
+        updateHolders()
     }
     
     // MARK: - Private methods
@@ -120,19 +121,16 @@ final class CartViewController: UIViewController {
     // MARK: - Network
     
     private func getOrder() {
-        ProgressHUD.show()
         ProgressHUD.animationType = .circleSpinFade
         if !isLoading {
             isLoading = true
             servicesAssembly.nftService.loadOrder { (result: Result<Order, Error>) in
                 switch result {
                 case .success(let order):
-                    ProgressHUD.dismiss()
                     self.refreshControl.endRefreshing()
                     self.nftOrder = order
-                case .failure(let error):
+                case .failure:
                     ProgressHUD.showError()
-                    print(error.localizedDescription)
                 }
             }
             self.isLoading = false
@@ -140,6 +138,7 @@ final class CartViewController: UIViewController {
     }
     
     private func getNfts(_ ids: [String]) {
+        ProgressHUD.show()
         if !isLoading {
             isLoading = true
             for id in ids {
@@ -147,9 +146,9 @@ final class CartViewController: UIViewController {
                     switch result {
                     case .success(let nft):
                         self.nfts.isEmpty ? self.nfts.append(nft) : self.apppendNewNft(nft)
-                    case .failure(let error):
-                        print(error.localizedDescription)
-                        
+                        ProgressHUD.dismiss()
+                    case .failure:
+                        ProgressHUD.showError()
                     }
                 }
                 self.isLoading = false
@@ -161,7 +160,6 @@ final class CartViewController: UIViewController {
         if nfts.filter({ $0.id == nft.id}).count == 0 {
             nfts.append(nft)
         }
-        tableView.animateAlpha(1)
     }
     
     private func calculateCart() -> String {
@@ -178,6 +176,7 @@ final class CartViewController: UIViewController {
         priceVStack.isHidden = nfts.isEmpty
         backgroundView.isHidden = nfts.isEmpty
         holderLabel.isHidden = !nfts.isEmpty
+        tableView.animateAlpha(1)
     }
     
     private func pullToRefreshTable() {
@@ -287,8 +286,8 @@ extension CartViewController: DeleteNftDelegate {
                 switch result {
                 case .success(let order):
                     self.nftOrder = order
-                case .failure(let error):
-                    print(error.localizedDescription)
+                case .failure:
+                    ProgressHUD.showError()
                 }
             }
         }

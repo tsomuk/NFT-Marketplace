@@ -110,20 +110,20 @@ final class DeleteViewController: UIViewController {
         }
     }
     
-    @objc private func deleteTapped() {
+    private func buttonAnimation() {
         UIView.animate(withDuration: 0.3) {
             self.view.alpha = 0
         } completion: { _ in
             self.dismiss(animated: true)
         }
+    }
+    
+    @objc private func deleteTapped() {
+        buttonAnimation()
         deleteAction()
     }
     
     @objc private func cancelTapped() {
-        UIView.animate(withDuration: 0.3) {
-            self.view.alpha = 0
-        } completion: { _ in
-            self.dismiss(animated: true)
-        }
+        buttonAnimation()
     }
 }

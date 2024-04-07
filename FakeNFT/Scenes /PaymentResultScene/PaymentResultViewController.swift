@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import ProgressHUD
 
-class PaymentResultViewController: UIViewController {
+final class PaymentResultViewController: UIViewController {
     
     // MARK: - ServicesAssembly
     
@@ -65,14 +66,14 @@ class PaymentResultViewController: UIViewController {
         cleanCard()
     }
     
-    func cleanCard() {
+    private func cleanCard() {
         self.servicesAssembly.nftService.updateOrder(nftsIds: [], isPaymentDone: true) { (result: Result<Order, Error>) in
             switch result {
-            case .success(let order):
+            case .success:
                 self.tabBarController?.selectedIndex = 1
                 self.navigationController?.popToRootViewController(animated: true)
-            case .failure(let error):
-                print(error.localizedDescription)
+            case .failure:
+                ProgressHUD.showError()
             }
         }
     }
