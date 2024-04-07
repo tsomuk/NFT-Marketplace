@@ -113,6 +113,8 @@ final class CartViewController: UIViewController {
         navigationItem.rightBarButtonItem = sortButton
     }
 
+    // MARK: - Network
+    
     private func getOrder() {
         ProgressHUD.show()
         ProgressHUD.animationType = .circleSpinFade
@@ -266,7 +268,7 @@ extension CartViewController: DeleteNftDelegate {
         let deleteViewController = DeleteViewController(image: image) {
             self.nfts.removeAll { $0.id == id }
             let newIds = self.nfts.map { $0.id }
-            self.servicesAssembly.nftService.updateOrder(nftsIds: newIds) { (result: Result<Order, Error>) in
+            self.servicesAssembly.nftService.updateOrder(nftsIds: newIds, isPaymentDone: false) { (result: Result<Order, Error>) in
                 switch result {
                 case .success(let order):
                     self.nftOrder = order

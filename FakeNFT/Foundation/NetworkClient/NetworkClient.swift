@@ -130,9 +130,10 @@ struct DefaultNetworkClient: NetworkClient {
             let formDataString = formData.map { key, value in
                 return "\(key)=\(value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
             }.joined(separator: "&")
-            urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = formDataString.data(using: .utf8)
         }
+        
+        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         
         return urlRequest
     }

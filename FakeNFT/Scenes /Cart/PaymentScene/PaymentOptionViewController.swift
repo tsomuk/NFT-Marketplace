@@ -182,7 +182,7 @@ final class PaymentOptionViewController: UIViewController {
             switch result {
             case .success(let payment):
                 print(payment)
-                let paymentResult = PaymentResultViewController()
+                let paymentResult = PaymentResultViewController(servicesAssembly: self.servicesAssembly)
                 self.navigationController?.pushViewController(paymentResult, animated: true)
             case .failure(let error):
                 self.showUnsuccessfulPaymentAlert()
