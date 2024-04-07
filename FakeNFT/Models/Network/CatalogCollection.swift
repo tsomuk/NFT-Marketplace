@@ -8,8 +8,10 @@
 import Foundation
 
 struct CatalogCollection: Decodable {
-    let id: UUID
+    let id: String
     let cover: String
     let name: String
+    let description: String
+    let author: String
     let nfts: [String]
 }
