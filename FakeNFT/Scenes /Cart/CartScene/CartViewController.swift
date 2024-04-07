@@ -26,6 +26,8 @@ final class CartViewController: UIViewController {
 
     // MARK: - Private varibles
 
+    private let refreshControl = UIRefreshControl()
+
     private var isLoading = false
 
     private var nftOrder: Order? = nil {
@@ -95,6 +97,7 @@ final class CartViewController: UIViewController {
         setupAppearance()
         setupNavBar()
         updateHolders()
+        pullToRefreshTable()
         
         tableView.register(CartTableViewCell.self, forCellReuseIdentifier: "cell")
     }
@@ -102,6 +105,7 @@ final class CartViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         tabBarController?.tabBar.isHidden = false
         navigationController?.setNavigationBarHidden(false, animated: false)
+        tableView.alpha = 0
         getOrder()
     }
 
@@ -124,6 +128,7 @@ final class CartViewController: UIViewController {
                 switch result {
                 case .success(let order):
                     ProgressHUD.dismiss()
+                    self.refreshControl.endRefreshing()
                     self.nftOrder = order
                 case .failure(let error):
                     ProgressHUD.showError()
@@ -156,6 +161,7 @@ final class CartViewController: UIViewController {
         if nfts.filter({ $0.id == nft.id}).count == 0 {
             nfts.append(nft)
         }
+        tableView.animateAlpha(1)
     }
 
     private func calculateCart() -> String {
@@ -173,7 +179,16 @@ final class CartViewController: UIViewController {
         backgroundView.isHidden = nfts.isEmpty
         holderLabel.isHidden = !nfts.isEmpty
     }
-
+    
+    private func pullToRefreshTable() {
+            refreshControl.addTarget(self, action: #selector(tableUpdate), for: .valueChanged)
+            tableView.refreshControl = refreshControl
+        }
+    
+    @objc private func tableUpdate(refreshControl: UIRefreshControl) {
+        getOrder()
+    }
+    
     private func setupAppearance() {
         view.backgroundColor = .nftWhite
 
