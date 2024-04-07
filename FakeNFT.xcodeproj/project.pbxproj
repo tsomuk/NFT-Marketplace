@@ -46,6 +46,8 @@
 		11CE9A222BBBF019000DFBA4 /* CurrencyListRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CE9A212BBBF019000DFBA4 /* CurrencyListRequest.swift */; };
 		11DB12C52BC191F300E33889 /* PaymentConfirmationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DB12C42BC191F300E33889 /* PaymentConfirmationRequest.swift */; };
 		11DB12C72BC1926100E33889 /* PaymentConfirmation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DB12C62BC1926100E33889 /* PaymentConfirmation.swift */; };
+		11DB12CA2BC2915E00E33889 /* AlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DB12C92BC2915E00E33889 /* AlertModel.swift */; };
+		11DB12CC2BC2916800E33889 /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DB12CB2BC2916800E33889 /* AlertPresenter.swift */; };
 		3F478ECF29DB474E00F6D39E /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F478ECE29DB474E00F6D39E /* Colors.swift */; };
 		3F478ED129DB476500F6D39E /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F478ED029DB476500F6D39E /* Fonts.swift */; };
 		3F603CCD29DB4A53000C43D7 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 3F603CCC29DB4A53000C43D7 /* ProgressHUD */; };
@@ -125,6 +127,8 @@
 		11CE9A212BBBF019000DFBA4 /* CurrencyListRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyListRequest.swift; sourceTree = "<group>"; };
 		11DB12C42BC191F300E33889 /* PaymentConfirmationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentConfirmationRequest.swift; sourceTree = "<group>"; };
 		11DB12C62BC1926100E33889 /* PaymentConfirmation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentConfirmation.swift; sourceTree = "<group>"; };
+		11DB12C92BC2915E00E33889 /* AlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModel.swift; sourceTree = "<group>"; };
+		11DB12CB2BC2916800E33889 /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
 		3F478ECE29DB474E00F6D39E /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		3F478ED029DB476500F6D39E /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		3F68069329CBBAF100B4F915 /* FakeNFT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FakeNFT.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -298,6 +302,15 @@
 			path = Statistics;
 			sourceTree = "<group>";
 		};
+		11DB12C82BC2914A00E33889 /* Alert */ = {
+			isa = PBXGroup;
+			children = (
+				11DB12C92BC2915E00E33889 /* AlertModel.swift */,
+				11DB12CB2BC2916800E33889 /* AlertPresenter.swift */,
+			);
+			path = Alert;
+			sourceTree = "<group>";
+		};
 		3F478ECD29DB473000F6D39E /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
@@ -333,6 +346,7 @@
 			children = (
 				3F68069629CBBAF100B4F915 /* AppDelegate.swift */,
 				3F68069829CBBAF100B4F915 /* SceneDelegate.swift */,
+				11DB12C82BC2914A00E33889 /* Alert */,
 				E1CD40DA2A96BE9B00BE7FE8 /* Resources */,
 				3F478ECD29DB473000F6D39E /* DesignSystem */,
 				3F6806CE29CBBD1B00B4F915 /* Foundation */,
@@ -680,9 +694,11 @@
 				3FC8C39129D2453B0081F015 /* ExampleRequest.swift in Sources */,
 				111E37642BBF2CC000749C15 /* UIView+extension.swift in Sources */,
 				0CFCB7462A78064B0009A829 /* NftDetailCellModel.swift in Sources */,
+				11DB12CC2BC2916800E33889 /* AlertPresenter.swift in Sources */,
 				0CFCB74B2A780EA80009A829 /* UIView+Constraints.swift in Sources */,
 				3F6806D729CBC50A00B4F915 /* CellsReusingUtils.swift in Sources */,
 				0C79EE612A76DCD600EE90EA /* NftByIdRequest.swift in Sources */,
+				11DB12CA2BC2915E00E33889 /* AlertModel.swift in Sources */,
 				E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */,
 				111E376D2BBF2D8B00749C15 /* UIImage+extension.swift in Sources */,
 				11CE9A222BBBF019000DFBA4 /* CurrencyListRequest.swift in Sources */,

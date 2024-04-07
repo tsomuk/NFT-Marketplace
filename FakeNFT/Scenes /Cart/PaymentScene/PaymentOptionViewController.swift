@@ -27,7 +27,7 @@ final class PaymentOptionViewController: UIViewController {
     // MARK: - Private varibles
     
     private var isLoading = false
-    private var currencyID = "" 
+    private var currencyID = ""
     
     private var currencies : [Currency] = [] {
         didSet {
@@ -76,7 +76,7 @@ final class PaymentOptionViewController: UIViewController {
         userAgreementButton.setTitle("Пользовательского соглашения", for: .normal)
         userAgreementButton.setTitleColor(.nftBlue, for: .normal)
         userAgreementButton.titleLabel?.font = .systemFont(ofSize: 13)
-        userAgreementButton.addTarget(self, action: #selector(showUserAgreement), for: .touchUpInside)
+        userAgreementButton.addTarget(PaymentOptionViewController.self, action: #selector(showUserAgreement), for: .touchUpInside)
         return userAgreementButton
     }()
     
@@ -136,6 +136,26 @@ final class PaymentOptionViewController: UIViewController {
         }
     }
     
+    // MARK: - Alert
+    
+    private func showUnsuccessfulPaymentAlert() {
+        
+        let replayButton = AlertButton(buttonText: "Повторить") {
+            self.paymentConfirmationRequest(for: self.currencyID)
+        }
+        
+        let cancelButton = AlertButton(buttonText: "Отменить", completion: nil)
+        
+        let alertModel = AlertModel(
+            title: "Не удалось произвести оплату",
+            message: nil,
+            primaryButton: replayButton,
+            additionalButtons: [cancelButton]
+        )
+        
+        AlertPresenter.showAlert(alertModel: alertModel, delegate: self)
+    }
+    
     // MARK: - Network
     
     private func getCurrencyList() {
@@ -165,6 +185,7 @@ final class PaymentOptionViewController: UIViewController {
                 let paymentResult = PaymentResultViewController()
                 self.navigationController?.pushViewController(paymentResult, animated: true)
             case .failure(let error):
+                self.showUnsuccessfulPaymentAlert()
                 print(error.localizedDescription)
             }
         }
