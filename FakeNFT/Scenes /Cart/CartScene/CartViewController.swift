@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import ProgressHUD
 
-final class CartViewController: UIViewController, ErrorView {
+final class CartViewController: UIViewController {
     
     // MARK: - ServicesAssembly
     
