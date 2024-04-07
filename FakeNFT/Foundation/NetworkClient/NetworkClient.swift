@@ -40,7 +40,7 @@ extension NetworkClient {
         type: T.Type,
         onResponse: @escaping (Result<T, Error>) -> Void
     ) -> NetworkTask? {
-        send(request: request, type: type, completionQueue: .main, onResponse: onResponse)
+        send(request: request, type: type, completionQueue: .global(), onResponse: onResponse)
     }
 }
 
@@ -125,7 +125,7 @@ struct DefaultNetworkClient: NetworkClient {
 
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
         urlRequest.addValue(
             "b351241e-2dec-4598-9abd-083d84e52843",
             forHTTPHeaderField: "X-Practicum-Mobile-Token"
