@@ -8,15 +8,19 @@
 import Foundation
 
 struct OrderUpdateRequest: NetworkRequest {
-    let newOrder: NewOrderModel
+    let newOrder: NewOrderModel?
     
     var httpMethod: HttpMethod = .put
     
     var dto: (any Encodable)? {
-        let formData: [String: String] = [
-            "nfts": newOrder.nfts.joined(separator: ", ")
-        ]
-        return formData
+        if let data = newOrder {
+            let formData: [String: String] = [
+                "nfts": data.nfts.joined(separator: ", ")
+            ]
+            return formData
+        } else {
+            return nil
+        }
     }
     
     var headers: [String: String]? = ["X-Practicum-Mobile-Token": "b351241e-2dec-4598-9abd-083d84e52843"]

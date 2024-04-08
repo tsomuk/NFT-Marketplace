@@ -124,15 +124,15 @@ struct DefaultNetworkClient: NetworkClient {
             }
         }
         
-        
         if let formData = request.dto as? [String: String] {
             // Transform data in x-www-form-urlencoded
             let formDataString = formData.map { key, value in
                 return "\(key)=\(value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
             }.joined(separator: "&")
-            urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = formDataString.data(using: .utf8)
         }
+        
+        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         
         return urlRequest
     }

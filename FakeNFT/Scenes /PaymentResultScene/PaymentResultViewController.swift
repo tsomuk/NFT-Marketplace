@@ -6,11 +6,27 @@
 //
 
 import UIKit
+import ProgressHUD
 
-class PaymentResultViewController: UIViewController {
+final class PaymentResultViewController: UIViewController {
+    
+    // MARK: - ServicesAssembly
+    
+    let servicesAssembly: ServicesAssembly
+    
+    init(servicesAssembly: ServicesAssembly) {
+        self.servicesAssembly = servicesAssembly
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Private varibles
     
     private lazy var payButton: UIButton = {
-        let payButton = NFTButton(title: "Вернуться в каталог")
+        let payButton = NFTButton(title: "Cart.goToCatalog"~)
         payButton.addTarget(self, action: #selector(backToCatalog), for: .touchUpInside)
         return payButton
     }()
@@ -23,7 +39,7 @@ class PaymentResultViewController: UIViewController {
     }()
     
     private let paymentLabel = NFTTextLabel(
-        text: "Успех! Оплата прошла, поздравляем с покупкой!",
+        text: "Cart.paymentPassed"~,
         fontSize: 22,
         fontColor: .nftBlack,
         fontWeight: .bold
@@ -36,15 +52,30 @@ class PaymentResultViewController: UIViewController {
         return vStack
     }()
     
+    // MARK: - Life cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupAppearance()
     }
     
+    // MARK: - Private methods
+    
     @objc private func backToCatalog() {
-        tabBarController?.selectedIndex = 1
-        navigationController?.popToRootViewController(animated: true)
+        cleanCard()
+    }
+    
+    private func cleanCard() {
+        self.servicesAssembly.nftService.updateOrder(nftsIds: [], isPaymentDone: true) { (result: Result<Order, Error>) in
+            switch result {
+            case .success:
+                self.tabBarController?.selectedIndex = 1
+                self.navigationController?.popToRootViewController(animated: true)
+            case .failure:
+                ProgressHUD.showError()
+            }
+        }
     }
     
     private func setupAppearance() {

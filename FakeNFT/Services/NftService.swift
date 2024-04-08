@@ -3,12 +3,14 @@ import Foundation
 typealias NftCompletion = (Result<Nft, Error>) -> Void
 typealias NftOrderCompletion = (Result<Order, Error>) -> Void
 typealias CurrencyListCompletion = (Result<[Currency], Error>) -> Void
+typealias PaymentCompletion = (Result<PaymentConfirmation, Error>) -> Void
 
 protocol NftService {
     func loadNft(id: String, completion: @escaping NftCompletion)
     func loadOrder(completion: @escaping NftOrderCompletion)
     func loadCurrencyList(completion: @escaping CurrencyListCompletion)
-    func updateOrder(nftsIds: [String], completion: @escaping NftOrderCompletion)
+    func updateOrder(nftsIds: [String], isPaymentDone: Bool, completion: @escaping NftOrderCompletion)
+    func paymentConfirmationRequest(currencyId: String, completion: @escaping PaymentCompletion)
 }
 
 final class NftServiceImpl: NftService {
@@ -61,13 +63,26 @@ final class NftServiceImpl: NftService {
         }
     }
     
-    func updateOrder(nftsIds: [String], completion: @escaping NftOrderCompletion) {
+    func updateOrder(nftsIds: [String], isPaymentDone: Bool, completion: @escaping NftOrderCompletion) {
         let newOrderModel = NewOrderModel(nfts: nftsIds)
-        var request = OrderUpdateRequest(newOrder: newOrderModel)
+        let request = isPaymentDone ? OrderUpdateRequest(newOrder: nil) : OrderUpdateRequest(newOrder: newOrderModel)
         networkClient.send(request: request, type: Order.self) { result in
             switch result {
             case .success(let order):
                 completion(.success(order))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func paymentConfirmationRequest(currencyId: String, completion: @escaping PaymentCompletion) {
+        
+        let request = PaymentConfirmationRequest(currencyId: currencyId)
+        networkClient.send(request: request, type: PaymentConfirmation.self) { result in
+            switch result {
+            case .success(let paymentConfirmation):
+                completion(.success(paymentConfirmation))
             case .failure(let error):
                 completion(.failure(error))
             }
