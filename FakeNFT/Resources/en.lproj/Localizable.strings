@@ -1,0 +1,29 @@
+"Tab.profile" = "Profile";
+"Tab.catalog" = "Catalog";
+"Tab.cart" = "Cart";
+"Tab.statistics" = "Statistic";
+"Catalog.openNft" = "Open NFT";
+"Error.network" = "Network Error";
+"Error.unknown" = "Unknown error";
+"Error.repeat" = "Repeat";
+"Error.title" = "Error";
+
+//Cart
+"Cart.emptyCart" = "Cart is empty";
+"Cart.price" = "Price";
+"Cart.sort" = "Sort by";
+"Cart.priceSort" = "Price";
+"Cart.ratingSort" = "Rating";
+"Cart.titleSort" = "Title";
+"Cart.cancel" = "Cancel";
+"Cart.delete" = "Delete";
+"Cart.back" = "Back";
+"Cart.comfirmationDelete" = "Are you sure you want to remove an item from your shopping cart?";
+"Cart.goToPayment" = "Go to payment";
+"Cart.chosePaymentOption" = "Select the payment method";
+"Cart.agreeToTheTerm" = "By making a purchase, you agree to the terms of the";
+"Cart.userAgreement" = "User agreement";
+"Cart.pay" = "Pay";
+"Cart.paymentFailed" = "Payment failed";
+"Cart.goToCatalog" = "Go to catalog";
+"Cart.paymentPassed" = "Success! Payment passed, congratulations on purchase!";

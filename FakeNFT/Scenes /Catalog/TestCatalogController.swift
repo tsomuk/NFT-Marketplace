@@ -26,6 +26,10 @@ final class TestCatalogViewController: UIViewController {
         testNftButton.setTitleColor(.systemBlue, for: .normal)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        tabBarController?.tabBar.isHidden = false
+    }
+    
     @objc private func showNft() {
         let assembly = NftDetailAssembly(servicesAssembler: servicesAssembly)
         let nftInput = NftDetailInput(id: Constants.testNftId)
