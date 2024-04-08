@@ -22,7 +22,7 @@ final class ProfileViewController: UIViewController {
     private let shimmerLoaderViewName = ShimmerLoaderView()
     private let shimmerLoaderView = ShimmerLoaderView()
 
-    private lazy var profileMainInfoStack1: UIStackView = {
+    private lazy var profileMainInfoStackImageName: UIStackView = {
         let horizontalStackView = UIStackView(arrangedSubviews: [
             profileImage,
             profileNameLabel
@@ -33,9 +33,9 @@ final class ProfileViewController: UIViewController {
         return horizontalStackView
     }()
 
-    private lazy var profileMainInfoStack2: UIStackView = {
+    private lazy var profileMainInfoImageNameBio: UIStackView = {
         let verticalStackView = UIStackView(arrangedSubviews: [
-            profileMainInfoStack1,
+            profileMainInfoStackImageName,
             profileBioLabel
         ])
         verticalStackView.axis = .vertical
@@ -116,17 +116,20 @@ final class ProfileViewController: UIViewController {
     private func addNCViews() {
         if navigationController != nil {
             let editButton = UIBarButtonItem(
-                image: UIImage(systemName: "square.and.pencil"),
+                image: UIImage(systemName: "square.and.pencil")?.withConfiguration(UIImage.SymbolConfiguration(
+                    pointSize: 42,
+                    weight: .medium)),
                 style: .plain,
                 target: self,
                 action: #selector(editProfileButtonTapped))
             editButton.tintColor = UIColor(named: "nftBlack")
+            editButton.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -16)
             navigationItem.rightBarButtonItem = editButton
         }
     }
 
     private func setUpView() {
-        [profileMainInfoStack2,
+        [profileMainInfoImageNameBio,
          profileSiteButton,
          profileTableView,
          shimmerLoaderViewName,
@@ -138,13 +141,13 @@ final class ProfileViewController: UIViewController {
         profileImage.snp.makeConstraints { make in
             make.width.height.equalTo(70)
         }
-        profileMainInfoStack2.snp.makeConstraints { make in
+        profileMainInfoImageNameBio.snp.makeConstraints { make in
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(16)
             make.top.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
         profileSiteButton.snp.makeConstraints { make in
             make.leading.equalTo(view.safeAreaLayoutGuide).inset(16)
-            make.top.equalTo(profileMainInfoStack2.snp.bottom).offset(8)
+            make.top.equalTo(profileMainInfoImageNameBio.snp.bottom).offset(8)
         }
         profileTableView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
@@ -161,13 +164,13 @@ final class ProfileViewController: UIViewController {
     private func setUpAnimation() {
         shimmerLoaderViewName.snp.makeConstraints { make in
             make.centerY.equalTo(profileImage.snp.centerY)
-            make.trailing.equalTo(profileMainInfoStack2)
+            make.trailing.equalTo(profileMainInfoImageNameBio)
             make.leading.equalTo(profileImage.snp.trailing).offset(16)
             make.height.equalTo(50)
         }
         shimmerLoaderView.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(profileMainInfoStack2)
-            make.top.equalTo(profileMainInfoStack1.snp.bottom).offset(20)
+            make.leading.trailing.equalTo(profileMainInfoImageNameBio)
+            make.top.equalTo(profileMainInfoStackImageName.snp.bottom).offset(20)
             make.height.equalTo(300)
         }
 
@@ -280,13 +283,17 @@ extension ProfileViewController: UITableViewDataSource {
         cell.tintColor = UIColor(named: "nftBlack")
         cell.selectionStyle = .none
 
+        let myNFTTitle = NSLocalizedString("ProfileMain.table.myNFT", comment: "")
+        let myChosenNFTTitle = NSLocalizedString("ProfileMain.table.myChosenNFT", comment: "")
+        let aboutDev = NSLocalizedString("ProfileMain.table.DevInfo", comment: "")
+        
         switch indexPath.section {
         case 0:
-            cell.setTitleLabel(text: "Мои NFT (\(numberOfMyNFT))")
+            cell.setTitleLabel(text: "\(myNFTTitle) (\(numberOfMyNFT))")
         case 1:
-            cell.setTitleLabel(text: "Избранные NFT (\(numberOfChosenNFT))")
+            cell.setTitleLabel(text: "\(myChosenNFTTitle) (\(numberOfChosenNFT))")
         case 2:
-            cell.setTitleLabel(text: "О разработчике")
+            cell.setTitleLabel(text: "\(aboutDev)")
         default:
             break
         }
@@ -324,7 +331,9 @@ extension ProfileViewController: UITableViewDelegate {
 
     private func showMyNFTScreen() {
         if let navigationController = self.navigationController {
-            let myNFTVC = MyNFTViewController()
+            let myNFTVC = MyNFTViewController(
+                servicesAssembly: servicesAssembly,
+                profileInfo: profileInfo)
             navigationController.pushViewController(myNFTVC, animated: true)
             navBarBackButton()
         }

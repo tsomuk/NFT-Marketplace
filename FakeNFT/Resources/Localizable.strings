@@ -7,3 +7,24 @@
 "Error.unknown" = "Произошла неизвестная ошибка";
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
+
+"ProfileMain.table.myNFT" = "Мои NFT";
+"ProfileMain.table.myChosenNFT" = "Избранные NFT";
+"ProfileMain.table.DevInfo" = "О разработчике";
+"ProfileEdit.changeImageTitle" = "Сменить\nфото";
+"ProfileEdit.nameTitle" = "Имя";
+"ProfileEdit.nameTitlePlaceholfer" = "Ваше имя";
+"ProfileEdit.bioTitle" = "Описание";
+"ProfileEdit.siteTitle" = "Сайт";
+"ProfileEdit.siteTitlePlaceholder" = "Ваш сайт";
+"ProfileEdit.imageUpdateTitle" = "Загрузить изображение";
+"ProfileMyNFT.emptyNFTLabel" = "У Вас еще нет NFT";
+"ProfileMyNFT.navbarTitle" = "Мои NFT";
+"ProfileMyNFT.sortAlertTitle" = "Сортировка";
+"ProfileMyNFT.priceAlertOption" = "По цене";
+"ProfileMyNFT.ratingAlertOption" = "По рейтингу";
+"ProfileMyNFT.nameAlertOption" = "По названию";
+"ProfileMyNFT.closeAlertOption" = "Закрыть";
+"ProfileMyNFTCell.priceLabel" = "Цена";
+"ProfileMyNFTCell.authorLabel" = "от";
+

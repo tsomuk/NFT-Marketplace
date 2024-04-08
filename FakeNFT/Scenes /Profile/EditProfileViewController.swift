@@ -50,8 +50,9 @@ final class EditProfileViewController: UIViewController {
 
     private lazy var changeProfileImageButton: UIButton = {
         let button = UIButton(type: .system)
+        let buttonTitle = NSLocalizedString("ProfileEdit.changeImageTitle", comment: "")
         button.setTitle(
-            "Сменить\nфото",
+            buttonTitle,
             for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         button.setTitleColor(.white, for: .normal)
@@ -68,9 +69,9 @@ final class EditProfileViewController: UIViewController {
 
     private lazy var editProfileStackMain: UIStackView = {
         let verticalStackView = UIStackView(arrangedSubviews: [
-            editProfileStack1,
-            editProfileStack2,
-            editProfileStack3
+            editProfileStackLabel,
+            editProfileStackBio,
+            editProfileStackSite
         ])
         verticalStackView.axis = .vertical
         verticalStackView.spacing = 24
@@ -79,7 +80,7 @@ final class EditProfileViewController: UIViewController {
         return verticalStackView
     }()
 
-    private lazy var editProfileStack1: UIStackView = {
+    private lazy var editProfileStackLabel: UIStackView = {
         let verticalStackView = UIStackView(arrangedSubviews: [
             nameLabel,
             nameTextField
@@ -91,7 +92,7 @@ final class EditProfileViewController: UIViewController {
         return verticalStackView
     }()
 
-    private lazy var editProfileStack2: UIStackView = {
+    private lazy var editProfileStackBio: UIStackView = {
         let verticalStackView = UIStackView(arrangedSubviews: [
             bioLabel,
             bioTextField
@@ -103,7 +104,7 @@ final class EditProfileViewController: UIViewController {
         return verticalStackView
     }()
 
-    private lazy var editProfileStack3: UIStackView = {
+    private lazy var editProfileStackSite: UIStackView = {
         let verticalStackView = UIStackView(arrangedSubviews: [
             siteLabel,
             siteTextField
@@ -117,7 +118,7 @@ final class EditProfileViewController: UIViewController {
 
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Имя"
+        label.text = NSLocalizedString("ProfileEdit.nameTitle", comment: "")
         label.textAlignment = .left
         label.textColor = UIColor(named: "nftBlack")
         label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
@@ -126,7 +127,7 @@ final class EditProfileViewController: UIViewController {
 
     private let nameTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Ваше имя"
+        textField.placeholder = NSLocalizedString("ProfileEdit.nameTitlePlaceholfer", comment: "")
         textField.textColor = UIColor(named: "nftBlack")
         textField.backgroundColor = UIColor(named: "nftLightGray")
         textField.font = UIFont.systemFont(ofSize: 17)
@@ -141,7 +142,7 @@ final class EditProfileViewController: UIViewController {
 
     private let bioLabel: UILabel = {
         let label = UILabel()
-        label.text = "Описание"
+        label.text = NSLocalizedString("ProfileEdit.bioTitle", comment: "")
         label.textAlignment = .left
         label.textColor = UIColor(named: "nftBlack")
         label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
@@ -160,7 +161,7 @@ final class EditProfileViewController: UIViewController {
 
     private let siteLabel: UILabel = {
         let label = UILabel()
-        label.text = "Сайт"
+        label.text = NSLocalizedString("ProfileEdit.siteTitle", comment: "")
         label.textAlignment = .left
         label.textColor = UIColor(named: "nftBlack")
         label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
@@ -169,7 +170,7 @@ final class EditProfileViewController: UIViewController {
 
     private let siteTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Ваш сайт"
+        textField.placeholder = NSLocalizedString("ProfileEdit.siteTitlePlaceholder", comment: "")
         textField.textColor = UIColor(named: "nftBlack")
         textField.backgroundColor = UIColor(named: "nftLightGray")
         textField.font = UIFont.systemFont(ofSize: 17)
@@ -185,7 +186,7 @@ final class EditProfileViewController: UIViewController {
     private let downloadNewImageField: UITextField = {
         let textField = UITextField()
         textField.textColor = UIColor(named: "nftBlack")
-        textField.placeholder = "Загрузить изображение"
+        textField.placeholder = NSLocalizedString("ProfileEdit.imageUpdateTitle", comment: "")
         textField.textAlignment = .center
         textField.backgroundColor = UIColor(named: "nftLightGray")
         textField.font = UIFont.systemFont(ofSize: 12)
@@ -375,7 +376,7 @@ final class EditProfileViewController: UIViewController {
     // Creation of request object
     private func changeProfileData(with profile: ProfileInfo) {
         var avatarURL: String
-        if downloadNewImageField.placeholder == "Загрузить изображение" {
+        if downloadNewImageField.placeholder == NSLocalizedString("ProfileEdit.imageUpdateTitle", comment: "") {
             avatarURL = profile.avatar
         } else {
             avatarURL = downloadNewImageField.text ?? profile.avatar
@@ -424,7 +425,6 @@ final class EditProfileViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let updatedProfileInfo):
-                    print("Profile successfully updated:", updatedProfileInfo)
                     ProgressHUD.dismiss()
                     self.delegate?.editProfileVCDismissed(self)
                 case .failure(let error):
