@@ -47,16 +47,15 @@ final class CatalogViewController: UIViewController {
         let request = CatalogRequest()
         let networkService = DefaultNetworkClient()
         networkService.send(request: request, type: [CatalogCollection].self) { [weak self] result in
+            ProgressHUD.dismiss()
             switch result {
             case .success(let collections):
                 DispatchQueue.main.async {
                     self?.allCollections = collections
                     self?.tableView.reloadData()
-                    ProgressHUD.dismiss()
                 }
             case .failure(let error):
                 assertionFailure(error.localizedDescription)
-                ProgressHUD.dismiss()
                 ProgressHUD.showError()
                 return
             }

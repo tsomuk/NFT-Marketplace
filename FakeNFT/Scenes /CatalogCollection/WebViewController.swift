@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import WebKit
 
 final class WebViewController: UIViewController {
     private let url: String
 
-    private lazy var webView: UIWebView = .init()
+    private lazy var webView: WKWebView = .init()
 
     private lazy var backButton: UIButton = {
         let button = UIButton()
@@ -32,13 +33,14 @@ final class WebViewController: UIViewController {
         super.viewDidLoad()
 
         guard let urlRequest = URL(string: url) else { return }
-        webView.loadRequest(URLRequest(url: urlRequest))
+        webView.load(URLRequest(url: urlRequest))
         view.backgroundColor = .systemBackground
 
         view.addSubview(backButton)
         backButton.snp.makeConstraints {
             $0.leading.equalTo(view).inset(16)
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(16)
+            $0.height.width.equalTo(24)
         }
 
         view.addSubview(webView)

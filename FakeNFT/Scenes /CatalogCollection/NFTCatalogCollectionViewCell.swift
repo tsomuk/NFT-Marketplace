@@ -8,7 +8,7 @@ import ProgressHUD
 import UIKit
 
 final class NFTCatalogCollectionViewCell: UICollectionViewCell {
-    lazy var indicator: UIActivityIndicatorView = {
+    private lazy var indicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
         indicator.hidesWhenStopped = true
         return indicator
@@ -109,9 +109,7 @@ final class NFTCatalogCollectionViewCell: UICollectionViewCell {
         }
 
         heartButton.snp.makeConstraints {
-//            $0.height.equalTo(heartButton.snp.width)
             $0.top.trailing.equalTo(imageView).inset(12)
-
         }
     }
 
@@ -120,22 +118,28 @@ final class NFTCatalogCollectionViewCell: UICollectionViewCell {
     }
 
     func configure(nft: Nft) {
-
         imageView.kf.setImage(with: nft.images.first)
         nameLabel.text = nft.name
         priceLabel.text = "\(nft.price) ETH"
         for star in 1...5 {
             star <= nft.rating ? setRating(isFull: true) :  setRating(isFull: false)
         }
-
         bagButton.setImage(UIImage(named: "basketEmpty"), for: .normal)
+    }
+
+    func startAnimation() {
+        indicator.startAnimating()
+    }
+
+    func stopAnimation() {
+        indicator.stopAnimating()
     }
 
     private func setRating(isFull: Bool) {
         let imageView = UIImageView()
         imageView.frame(forAlignmentRect: .init(x: 0.0, y: 0.0, width: 12.0, height: 12.0))
         imageView.image = UIImage(systemName: "star.fill")
-        imageView.tintColor = isFull ? .yellow  : .lightGray
+        imageView.tintColor = isFull ? .yellow  : UIColor(named: "nftLightGray")
         imageView.snp.makeConstraints {
             $0.height.equalTo(imageView.snp.width)
             $0.height.equalTo(12)

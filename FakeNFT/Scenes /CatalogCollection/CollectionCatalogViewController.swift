@@ -31,7 +31,7 @@ final class CatalogCollectionViewController: UIViewController {
 
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = catalogCollection.name
+        label.text =  catalogCollection.name
         label.numberOfLines = 0
         label.font = .systemFont(ofSize: 22, weight: .bold)
         return label
@@ -42,6 +42,7 @@ final class CatalogCollectionViewController: UIViewController {
         let attributedString = NSMutableAttributedString(string: catalogCollection.author)
         let url = URL(string: RequestConstants.ypURL)!
         attributedString.setAttributes([.link: url], range: NSRange(location: 0, length: attributedString.length))
+        text.isScrollEnabled = false
         text.attributedText = attributedString
         text.isUserInteractionEnabled = true
         text.isEditable = false
@@ -117,8 +118,9 @@ final class CatalogCollectionViewController: UIViewController {
 
         scrollView.addSubview(backButton)
         backButton.snp.makeConstraints {
-            $0.leading.equalTo(view).inset(16)
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(16)
+            $0.leading.equalTo(view).inset(9)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(9)
+            $0.height.width.equalTo(24)
         }
         scrollView.addSubview(nameLabel)
         nameLabel.snp.makeConstraints {
@@ -130,6 +132,7 @@ final class CatalogCollectionViewController: UIViewController {
         authorLabel.snp.makeConstraints {
             $0.leading.equalTo(view.safeAreaLayoutGuide).inset(16)
             $0.top.equalTo(nameLabel.snp.bottom).offset(13)
+            $0.width.equalTo(112)
         }
 
         scrollView.addSubview(descriptionLabel)
@@ -150,14 +153,13 @@ final class CatalogCollectionViewController: UIViewController {
             $0.leading.equalTo(authorLabel.snp.trailing)
             $0.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(descriptionLabel.snp.top)
-            $0.top.equalTo(nameLabel.snp.bottom).offset(4)
+            $0.top.equalTo(nameLabel.snp.bottom).offset(6)
         }
     }
 
     @objc private func dismissVC() {
         dismiss(animated: true)
     }
-
 }
 
 extension CatalogCollectionViewController: UITextViewDelegate {
@@ -189,22 +191,25 @@ extension CatalogCollectionViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
 
-        cell.indicator.startAnimating()
-
-            servicesAssembly.nftService.loadNft(
-                id: catalogCollection.nfts[indexPath.row]
-            ) { (result: Result<Nft, Error>) in
-                switch result {
-                case .success(let nft):
-                    DispatchQueue.main.async {
-                        cell.configure(nft: nft)
-                    }
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-        }
-        cell.indicator.stopAnimating()
+        configureCell(cell: cell, indexPath: indexPath)
         return cell
+    }
+
+    private func configureCell(cell: NFTCatalogCollectionViewCell, indexPath: IndexPath) {
+        cell.startAnimation()
+        servicesAssembly.nftService.loadNft(
+            id: catalogCollection.nfts[indexPath.row]
+        ) { (result: Result<Nft, Error>) in
+            switch result {
+            case .success(let nft):
+                DispatchQueue.main.async {
+                    cell.configure(nft: nft)
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        cell.stopAnimation()
     }
  }
 
