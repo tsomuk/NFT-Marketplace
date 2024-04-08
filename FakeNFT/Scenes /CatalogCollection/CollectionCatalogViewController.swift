@@ -153,7 +153,7 @@ final class CatalogCollectionViewController: UIViewController {
             $0.leading.equalTo(authorLabel.snp.trailing)
             $0.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(descriptionLabel.snp.top)
-            $0.top.equalTo(nameLabel.snp.bottom).offset(6)
+            $0.top.equalTo(nameLabel.snp.bottom).offset(8)
         }
     }
 
