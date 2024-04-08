@@ -14,7 +14,7 @@ final class DeleteViewController: UIViewController {
     
     
     private lazy var deleteButton: UIButton = {
-        let deleteButton = NFTButton(title: "Удалить")
+        let deleteButton = NFTButton(title: "Cart.delete"~)
         deleteButton.setTitleColor(.nftRed, for: .normal)
         deleteButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         deleteButton.addTarget(self, action: #selector(deleteTapped), for: .touchUpInside)
@@ -22,7 +22,7 @@ final class DeleteViewController: UIViewController {
     }()
     
     private lazy var cancelButton: UIButton = {
-        let cancelButton = NFTButton(title: "Вернуться")
+        let cancelButton = NFTButton(title: "Cart.back"~)
         cancelButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         cancelButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
         return cancelButton
@@ -38,7 +38,7 @@ final class DeleteViewController: UIViewController {
     }()
     
     private lazy var conformationLabel = NFTTextLabel(
-        text: "Вы уверены, что хотите удалить объект из корзины?",
+        text: "Cart.comfirmationDelete"~,
         fontSize: 13,
         fontColor: .nftBlack,
         fontWeight: .regular

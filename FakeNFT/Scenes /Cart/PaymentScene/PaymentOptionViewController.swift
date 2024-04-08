@@ -41,7 +41,7 @@ final class PaymentOptionViewController: UIViewController {
     }
     
     private lazy var payButton: UIButton = {
-        let payButton = NFTButton(title: "Оплатить")
+        let payButton = NFTButton(title: "Cart.pay"~)
         payButton.alpha = 0.5
         payButton.isEnabled = false
         payButton.addTarget(self, action: #selector(goToPaymentResult), for: .touchUpInside)
@@ -58,7 +58,7 @@ final class PaymentOptionViewController: UIViewController {
     }()
     
     private let userAgreementLabel = NFTTextLabel(
-        text: "Совершая покупку, вы соглашаетесь с условиями",
+        text: "Cart.agreeToTheTerm"~,
         fontSize: 13,
         fontColor: .nftBlack,
         fontWeight: .regular
@@ -80,7 +80,7 @@ final class PaymentOptionViewController: UIViewController {
     
     private lazy var userAgreementButton: UIButton = {
         let userAgreementButton = UIButton()
-        userAgreementButton.setTitle("Пользовательского соглашения", for: .normal)
+        userAgreementButton.setTitle("Cart.userAgreement"~, for: .normal)
         userAgreementButton.setTitleColor(.nftBlue, for: .normal)
         userAgreementButton.titleLabel?.font = .systemFont(ofSize: 13)
         userAgreementButton.addTarget(self, action: #selector(showUserAgreement), for: .touchUpInside)
@@ -116,7 +116,7 @@ final class PaymentOptionViewController: UIViewController {
     }
     
     private func setupAppearance() {
-        title = "Выберите способ оплаты"
+        title = "Cart.chosePaymentOption"~
         view.backgroundColor = .nftWhite
         tabBarController?.tabBar.isHidden = true
         view.addSubviews(collectionView,backgroundView,payButton,vStack)
@@ -147,14 +147,14 @@ final class PaymentOptionViewController: UIViewController {
     
     private func showUnsuccessfulPaymentAlert() {
         
-        let replayButton = AlertButton(buttonText: "Повторить") {
+        let replayButton = AlertButton(buttonText: "Error.repeat"~) {
             self.paymentConfirmationRequest(for: self.currencyID)
         }
         
-        let cancelButton = AlertButton(buttonText: "Отменить", completion: nil)
+        let cancelButton = AlertButton(buttonText: "Cart.cancel"~, completion: nil)
         
         let alertModel = AlertModel(
-            title: "Не удалось произвести оплату",
+            title: "Cart.paymentFailed"~,
             message: nil,
             primaryButton: replayButton,
             additionalButtons: [cancelButton]

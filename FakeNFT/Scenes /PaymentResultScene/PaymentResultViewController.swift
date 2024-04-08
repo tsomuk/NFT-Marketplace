@@ -26,7 +26,7 @@ final class PaymentResultViewController: UIViewController {
     // MARK: - Private varibles
     
     private lazy var payButton: UIButton = {
-        let payButton = NFTButton(title: "Вернуться в каталог")
+        let payButton = NFTButton(title: "Cart.goToCatalog"~)
         payButton.addTarget(self, action: #selector(backToCatalog), for: .touchUpInside)
         return payButton
     }()
@@ -39,7 +39,7 @@ final class PaymentResultViewController: UIViewController {
     }()
     
     private let paymentLabel = NFTTextLabel(
-        text: "Успех! Оплата прошла, поздравляем с покупкой!",
+        text: "Cart.paymentPassed"~,
         fontSize: 22,
         fontColor: .nftBlack,
         fontWeight: .bold

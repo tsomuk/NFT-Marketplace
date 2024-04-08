@@ -55,7 +55,7 @@ final class CartTableViewCell: UITableViewCell {
     
     private lazy var priceLabel: UILabel = {
         let priceLabel = UILabel()
-        priceLabel.text = "Цена"
+        priceLabel.text = "Cart.price"~
         priceLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         return priceLabel
     }()

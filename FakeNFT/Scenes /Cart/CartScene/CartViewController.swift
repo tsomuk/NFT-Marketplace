@@ -46,7 +46,7 @@ final class CartViewController: UIViewController {
     }
     
     private lazy var payButton: UIButton = {
-        let payButton = NFTButton(title: "К оплате")
+        let payButton = NFTButton(title: "Cart.goToPayment"~)
         payButton.addTarget(self, action: #selector(goToPayment), for: .touchUpInside)
         return payButton
     }()
@@ -61,7 +61,7 @@ final class CartViewController: UIViewController {
         return totalPriceLabel
     }()
     
-    private let holderLabel = NFTTextLabel(text: "Корзина пуста", fontSize: 17, fontColor: .nftBlack, fontWeight: .bold)
+    private let holderLabel = NFTTextLabel(text: "Cart.emptyCart"~, fontSize: 17, fontColor: .nftBlack, fontWeight: .bold)
     
     private lazy var priceVStack: UIStackView = {
         let vStack = UIStackView(arrangedSubviews: [numOfElementsLabel, totalPriceLabel])
@@ -235,21 +235,21 @@ final class CartViewController: UIViewController {
     
     @objc private func sortButtonTapped() {
         
-        let actionSheet = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Cart.sort"~, message: nil, preferredStyle: .actionSheet)
         
-        let priceSort = UIAlertAction(title: "По цене", style: .default) { _ in
+        let priceSort = UIAlertAction(title: "Cart.priceSort"~, style: .default) { _ in
             self.nfts.sort { $0.price > $1.price }
         }
         
-        let ratingSort = UIAlertAction(title: "По рейтингу", style: .default) { _ in
+        let ratingSort = UIAlertAction(title: "Cart.ratingSort"~, style: .default) { _ in
             self.nfts.sort { $0.rating > $1.rating }
         }
         
-        let titleSort = UIAlertAction(title: "По названию", style: .default) { _ in
+        let titleSort = UIAlertAction(title: "Cart.titleSort"~, style: .default) { _ in
             self.nfts.sort { $0.name < $1.name }
         }
         
-        let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel) { _ in
+        let cancelAction = UIAlertAction(title: "Cart.cancel"~, style: .cancel) { _ in
         }
         
         self.tableView.reloadData()
