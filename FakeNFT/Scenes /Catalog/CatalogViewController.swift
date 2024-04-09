@@ -13,6 +13,7 @@ final class CatalogViewController: UIViewController {
         tableView.register(CatalogTableViewCell.self, forCellReuseIdentifier: "CatalogCell")
         tableView.separatorStyle = .none
         tableView.dataSource = self
+        tableView.delegate = self
         return tableView
     }()
 
@@ -46,15 +47,16 @@ final class CatalogViewController: UIViewController {
         let request = CatalogRequest()
         let networkService = DefaultNetworkClient()
         networkService.send(request: request, type: [CatalogCollection].self) { [weak self] result in
+            ProgressHUD.dismiss()
             switch result {
             case .success(let collections):
-                self?.allCollections = collections
-                self?.tableView.reloadData()
-                ProgressHUD.dismiss()
+                DispatchQueue.main.async {
+                    self?.allCollections = collections
+                    self?.tableView.reloadData()
+                }
             case .failure(let error):
-                // TODO: - Добавить реакцию на ошибок
                 assertionFailure(error.localizedDescription)
-                ProgressHUD.dismiss()
+                ProgressHUD.showError()
                 return
             }
         }
@@ -96,5 +98,16 @@ extension CatalogViewController: UITableViewDataSource {
             label: "\(allCollections[indexPath.row].name) (\(allCollections[indexPath.row].nfts.count))"
         )
         return cell
+    }
+}
+
+extension CatalogViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let viewController = CatalogCollectionViewController(
+            servicesAssembly: servicesAssembly,
+            catalogCollection: allCollections[indexPath.row]
+        )
+        viewController.modalPresentationStyle = .fullScreen
+        present(viewController, animated: false)
     }
 }
