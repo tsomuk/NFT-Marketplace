@@ -8,9 +8,16 @@
 import Foundation
 import UIKit
 
+protocol MyChosenNFTCellDelegate: AnyObject{
+    func dislikeNFT(nftId: String)
+}
+
 final class ChosenNFTViewCell: UICollectionViewCell {
-    
+
     // MARK: -  Properties & Constants
+
+    weak var delegate: MyChosenNFTCellDelegate?
+    private var nftId: String?
 
     private let myChosenNFTImage: UIImageView = {
         let imageView = UIImageView()
@@ -121,6 +128,7 @@ final class ChosenNFTViewCell: UICollectionViewCell {
             myChosenNFTImage.layer.cornerRadius = 12
             myChosenNFTImage.layer.masksToBounds = true
          }
+        nftId = NFT.id
     }
 
     private func configureRatingStars(with rating: Int) {
@@ -149,6 +157,7 @@ final class ChosenNFTViewCell: UICollectionViewCell {
     }
 
     @objc private func likeButtonTapped() {
-        print("tapped")
+        guard let nftId = nftId else { return }
+        delegate?.dislikeNFT(nftId: nftId)
     }
 }

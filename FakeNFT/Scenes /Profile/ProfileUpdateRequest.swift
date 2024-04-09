@@ -28,9 +28,12 @@ struct ProfileUpdateRequest: NetworkRequest {
             "avatar": newProfileData.avatar
         ]
 
-        let likesString = newProfileData.likes.joined(separator: ",")
-
-        formData["likes"] = likesString
+        if newProfileData.likes.isEmpty {
+            formData["likes"] = "null"
+        } else {
+            let likesString = newProfileData.likes.joined(separator: ",")
+            formData["likes"] = likesString
+        }
 
         return formData
     }

@@ -342,13 +342,12 @@ extension ProfileViewController: UITableViewDelegate {
     }
 
     private func showChosenScreen() {
-        if let navigationController = self.navigationController {
-            let chosenNFTVC = ChosenNFTViewController(
-                servicesAssembly: servicesAssembly,
-                profileInfo: profileInfo)
-            navigationController.pushViewController(chosenNFTVC, animated: true)
-            navBarBackButton()
-        }
+        guard let navigationController = self.navigationController else { return }
+        let chosenNFTVC = ChosenNFTViewController(
+            servicesAssembly: servicesAssembly,
+            profileInfo: profileInfo)
+        chosenNFTVC.delegate = self
+        navigationController.pushViewController(chosenNFTVC, animated: true)
     }
 
     private func navBarBackButton() {
@@ -358,5 +357,19 @@ extension ProfileViewController: UITableViewDelegate {
             target: nil,
             action: nil)
         navigationItem.backBarButtonItem?.tintColor = UIColor(named: "nftBlack")
+    }
+
+    @objc private func backToProfileButtonTapped() {
+        fetchProfileInfo()
+        dismiss(animated: true, completion: nil)
+    }
+}
+
+// MARK: - MyChosenNFTDelegate - dismiss ChosenNFTVC
+
+extension ProfileViewController: MyChosenNFTDelegate {
+    func chosenNFTViewControllerDidDismiss(_ vc: ChosenNFTViewController) {
+        fetchProfileInfo()
+        navigationController?.popViewController(animated: true)
     }
 }

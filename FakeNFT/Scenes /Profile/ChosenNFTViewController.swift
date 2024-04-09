@@ -9,12 +9,19 @@ import Foundation
 import UIKit
 import ProgressHUD
 
+protocol MyChosenNFTDelegate: AnyObject {
+    func chosenNFTViewControllerDidDismiss(_ vc: ChosenNFTViewController)
+}
+
 final class ChosenNFTViewController: UIViewController {
 
     // MARK: -  Properties & Constants
+
+    weak var delegate: MyChosenNFTDelegate?
     private let servicesAssembly: ServicesAssembly
     private let networkClient = DefaultNetworkClient()
     private let profileInfo: ProfileInfo?
+    private var newProfileInfo: ProfileInfo?
     private var myChosenNFTs: [NFTInfo] = []
     private var myChosenNFT: NFTInfo?
 
@@ -57,12 +64,27 @@ final class ChosenNFTViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .systemBackground
-        title = "Избранные NFT"
+        setUpNavBar()
         setUpView()
         fetchMyChosenNFTInfo()
     }
 
     // MARK: -  Private Methods
+
+    private func setUpNavBar(){
+        if navigationController != nil {
+            title = "Избранные NFT"
+            
+            let backButton = UIBarButtonItem(
+                image: UIImage(systemName: "chevron.left")?.withConfiguration(UIImage.SymbolConfiguration(
+                    weight: .medium)),
+                style: .plain,
+                target: self,
+                action: #selector(backButtonTapped))
+            navigationItem.leftBarButtonItem = backButton
+            navigationItem.leftBarButtonItem?.tintColor = UIColor(named: "nftBlack")
+        }
+    }
 
     private func setUpView() {
         view.addSubview(myChosenNFTCollView)
@@ -117,6 +139,7 @@ final class ChosenNFTViewController: UIViewController {
                 }
             }
         }
+        updateUI()
     }
 
     private func setUpProgressHUD() {
@@ -130,7 +153,12 @@ final class ChosenNFTViewController: UIViewController {
         myChosenNFTCollView.isHidden = myChosenNFTs.isEmpty
         emptyNFTLabel.isHidden = !myChosenNFTs.isEmpty
     }
+
+    @objc private func backButtonTapped() {
+        delegate?.chosenNFTViewControllerDidDismiss(self)
+    }
 }
+
 // MARK: - UICollectionViewDataSource
 
 extension ChosenNFTViewController: UICollectionViewDataSource {
@@ -156,7 +184,9 @@ extension ChosenNFTViewController: UICollectionViewDataSource {
             withReuseIdentifier: "cellChosenNFTCV",
             for: indexPath) as? ChosenNFTViewCell
         else { return UICollectionViewCell() }
-        
+
+        cell.delegate = self
+
         let myChosenNFT = myChosenNFTs[indexPath.row]
         cell.configureMyChosenNFT(with: myChosenNFT)
 
@@ -204,5 +234,69 @@ extension ChosenNFTViewController: UICollectionViewDelegateFlowLayout {
         minimumInteritemSpacingForSectionAt section: Int
     ) -> CGFloat {
         params.cellSpacing
+    }
+}
+
+// MARK: - Extension MyChosenNFTCellDelegate
+
+extension ChosenNFTViewController: MyChosenNFTCellDelegate {
+    func dislikeNFT(nftId: String) {
+        if let indexToDelete = myChosenNFTs.firstIndex(where: { $0.id == nftId })
+        {
+            myChosenNFTs.remove(at: indexToDelete)
+        }
+        updateNewChosenNFTData()
+    }
+
+    private func updateNewChosenNFTData() {
+        setUpProgressHUD()
+        ProgressHUD.show()
+
+        guard let profileInfo = profileInfo
+        else {
+            print("Profile data is nil")
+            ProgressHUD.dismiss()
+            return
+        }
+
+        changeMyChosenNFTData(with: profileInfo)
+
+        guard let newProfileInfo = newProfileInfo
+        else {
+            print("New profile data is nil")
+            ProgressHUD.dismiss()
+            return
+        }
+
+        let updateRequest = ProfileUpdateRequest(userId: "/api/v1/profile/1", newProfileData: newProfileInfo)
+
+        networkClient.send(
+            request: updateRequest,
+            type: ProfileInfo.self)
+        { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self?.updateUI()
+                    self?.myChosenNFTCollView.reloadData()
+                    ProgressHUD.dismiss()
+                case .failure(let error):
+                    print("Failed to update profile:", error.localizedDescription)
+                    ProgressHUD.dismiss()
+                }
+            }
+        }
+    }
+
+    private func changeMyChosenNFTData(with profile: ProfileInfo) {
+        let nftLikesIds = myChosenNFTs.map { $0.id }
+        newProfileInfo = ProfileInfo(
+            name: profile.name,
+            avatar: profile.avatar,
+            description: profile.description,
+            website: profile.website,
+            nfts: profile.nfts,
+            likes: nftLikesIds,
+            id: profile.id)
     }
 }
