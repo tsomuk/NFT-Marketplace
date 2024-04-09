@@ -240,7 +240,9 @@ final class ProfileViewController: UIViewController {
 
     @objc private func profileSiteButtonTapped() {
         if let navigationController = self.navigationController {
-            let profileSiteVC = ProfileSiteViewController()
+            let profileSiteVC = ProfileSiteViewController(
+                servicesAssembly: servicesAssembly,
+                profileInfo: profileInfo)
             navigationController.pushViewController(profileSiteVC, animated: true)
         }
         navBarBackButton()
