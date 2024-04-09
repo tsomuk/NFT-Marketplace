@@ -343,7 +343,9 @@ extension ProfileViewController: UITableViewDelegate {
 
     private func showChosenScreen() {
         if let navigationController = self.navigationController {
-            let chosenNFTVC = ChosenNFTViewController()
+            let chosenNFTVC = ChosenNFTViewController(
+                servicesAssembly: servicesAssembly,
+                profileInfo: profileInfo)
             navigationController.pushViewController(chosenNFTVC, animated: true)
             navBarBackButton()
         }

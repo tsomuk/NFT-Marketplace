@@ -7,10 +7,14 @@
 
 import Foundation
 import UIKit
+import ProgressHUD
 
 final class ChosenNFTViewController: UIViewController {
 
     // MARK: -  Properties & Constants
+    private let servicesAssembly: ServicesAssembly
+    private let networkClient = DefaultNetworkClient()
+    private let profileInfo: ProfileInfo?
     private var myChosenNFTs: [NFTInfo] = []
     private var myChosenNFT: NFTInfo?
 
@@ -37,7 +41,9 @@ final class ChosenNFTViewController: UIViewController {
         return collectionView
     }()
 
-    init() {
+    init(servicesAssembly: ServicesAssembly, profileInfo: ProfileInfo?) {
+        self.servicesAssembly = servicesAssembly
+        self.profileInfo = profileInfo
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -53,39 +59,7 @@ final class ChosenNFTViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Избранные NFT"
         setUpView()
-
-        let mockNFT1 = NFTInfo(
-            createdAt: "",
-            name: "April",
-            images: ["https://code.s3.yandex.net/Mobile/iOS/NFT/Beige/April/1.png"],
-            rating: 5,
-            description: "I'm the best",
-            price: 1.25,
-            author: "Dina Doe",
-            id: "1"
-        )
-        let mockNFT2 = NFTInfo(
-            createdAt: "",
-            name: "Bella",
-            images: ["https://code.s3.yandex.net/Mobile/iOS/NFT/Beige/April/1.png"],
-            rating: 2,
-            description: "I'm the best",
-            price: 1.05,
-            author: "John Doe",
-            id: "2"
-        )
-        let mockNFT3 = NFTInfo(
-            createdAt: "",
-            name: "Cita",
-            images: ["https://code.s3.yandex.net/Mobile/iOS/NFT/Beige/April/1.png"],
-            rating: 4,
-            description: "I'm the best",
-            price: 3.00,
-            author: "Justin Doe",
-            id: "3"
-        )
-        myChosenNFTs = [mockNFT1, mockNFT2, mockNFT3]
-        updateUI()
+        fetchMyChosenNFTInfo()
     }
 
     // MARK: -  Private Methods
@@ -111,6 +85,45 @@ final class ChosenNFTViewController: UIViewController {
 
         myChosenNFTCollView.isHidden = true
         emptyNFTLabel.isHidden = true
+    }
+
+    private func fetchMyChosenNFTInfo() {
+        setUpProgressHUD()
+
+        guard let profileInfo = profileInfo else {
+            print("Profile info is nil")
+            ProgressHUD.dismiss()
+            return
+        }
+
+        let likesIds = profileInfo.likes
+        for likesId in likesIds {
+            ProgressHUD.show()
+            networkClient.send(
+                request: MyNFTInfoRequest(userId: "/api/v1/nft/", nftId: likesId),
+                type: NFTInfo.self)
+            { [weak self] result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let myNFTInfo):
+                        self?.myChosenNFTs.append(myNFTInfo)
+                        self?.myChosenNFTCollView.reloadData()
+                        self?.updateUI()
+                        ProgressHUD.dismiss()
+                    case .failure(let error):
+                        print("Failed to fetch profile info for NFT with ID \(likesId): \(error.localizedDescription)")
+                        ProgressHUD.dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private func setUpProgressHUD() {
+        ProgressHUD.animationType = .circleStrokeSpin
+        ProgressHUD.colorBackground = .clear
+        ProgressHUD.colorAnimation = UIColor(named: "nftBlack") ?? .black
+        ProgressHUD.colorProgress = UIColor(named: "nftLightGray") ?? .lightGray
     }
 
     private func updateUI() {

@@ -54,7 +54,7 @@ final class ChosenNFTViewCell: UICollectionViewCell {
         ])
         verticalStackView.axis = .vertical
         verticalStackView.spacing = 8
-        verticalStackView.alignment = .fill
+        verticalStackView.alignment = .leading
         verticalStackView.distribution = .equalCentering
         return verticalStackView
     }()
@@ -107,7 +107,7 @@ final class ChosenNFTViewCell: UICollectionViewCell {
             make.top.equalTo(myChosenNFTImage.snp.top)
         }
         myChosenNFTStackMain.snp.makeConstraints { make in
-            make.top.leading.bottom.equalTo(contentView)
+            make.top.leading.bottom.trailing.equalTo(contentView)
         }
     }
 
@@ -124,6 +124,8 @@ final class ChosenNFTViewCell: UICollectionViewCell {
     }
 
     private func configureRatingStars(with rating: Int) {
+        myChosenNFTStarsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
         let totalStars = 5
         let starConfiguration = UIImage.SymbolConfiguration(pointSize: 12)
         
