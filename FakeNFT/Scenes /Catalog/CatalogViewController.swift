@@ -72,9 +72,33 @@ final class CatalogViewController: UIViewController {
         )
     }
 
-    // TODO: - Добавить сортировку каталога
     @objc private func sortedCatalog() {
+        let alert = UIAlertController(
+            title: "Сортировка",
+            message: nil,
+            preferredStyle: .actionSheet)
+        let nameSortedAction = UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
+            self?.sortedNameCollections()
+            self?.tableView.reloadData()
+        }
+        alert.addAction(nameSortedAction)
 
+        let countNftSortedAction = UIAlertAction(title: "По количеству NFT", style: .default) { [weak self] _ in
+            self?.sortedCountNftCollections()
+            self?.tableView.reloadData()
+        }
+        alert.addAction(countNftSortedAction)
+        let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel)
+        alert.addAction(cancelAction)
+        present(alert, animated: true, completion: nil)
+    }
+
+    private func sortedNameCollections() {
+        allCollections.sort(by: {$0.name < $1.name})
+    }
+
+    private func sortedCountNftCollections() {
+        allCollections.sort(by: {$0.nfts.count < $1.nfts.count})
     }
 }
 

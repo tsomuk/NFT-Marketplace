@@ -7,7 +7,16 @@
 import ProgressHUD
 import UIKit
 
+protocol CellDelegate: AnyObject {
+    func reloadBug(model: NftCellModel)
+    func reloadLike(model: NftCellModel)
+}
+
 final class NFTCatalogCollectionViewCell: UICollectionViewCell {
+    weak var delegate: CellDelegate?
+
+    private var model: NftCellModel?
+
     private lazy var indicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
         indicator.hidesWhenStopped = true
@@ -23,6 +32,7 @@ final class NFTCatalogCollectionViewCell: UICollectionViewCell {
 
     private lazy var bagButton: UIButton = {
         let button = UIButton()
+        button.addTarget(self, action: #selector(bagDidTapped), for: .touchUpInside)
         return button
     }()
 
@@ -79,9 +89,10 @@ final class NFTCatalogCollectionViewCell: UICollectionViewCell {
         return stackView
     }()
 
-    private lazy var heartButton: UIButton = {
+    private lazy var likeButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+        button.addTarget(self, action: #selector(likeDidTapped), for: .touchUpInside)
         button.tintColor = .white
         return button
     }()
@@ -93,7 +104,7 @@ final class NFTCatalogCollectionViewCell: UICollectionViewCell {
 
         contentView.addSubview(stackView)
         contentView.addSubview(indicator)
-        contentView.addSubview(heartButton)
+        contentView.addSubview(likeButton)
 
         stackView.snp.makeConstraints {
             $0.leading.top.trailing.equalTo(contentView)
@@ -108,7 +119,7 @@ final class NFTCatalogCollectionViewCell: UICollectionViewCell {
             $0.centerX.centerY.equalTo(contentView)
         }
 
-        heartButton.snp.makeConstraints {
+        likeButton.snp.makeConstraints {
             $0.top.trailing.equalTo(imageView).inset(12)
         }
     }
@@ -117,14 +128,18 @@ final class NFTCatalogCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(nft: Nft) {
-        imageView.kf.setImage(with: nft.images.first)
-        nameLabel.text = nft.name
-        priceLabel.text = "\(nft.price) ETH"
-        for star in 1...5 {
-            star <= nft.rating ? setRating(isFull: true) :  setRating(isFull: false)
+    func configure(model: NftCellModel) {
+        self.model = model
+        imageView.kf.setImage(with: model.images.first)
+        nameLabel.text = model.name
+        priceLabel.text = "\(model.price) ETH"
+        if ratingStackView.subviews.count < 5 {
+            for star in 1...5 {
+                star <= model.rating ? setRating(isFull: true) : setRating(isFull: false)
+            }
         }
-        bagButton.setImage(UIImage(named: "basketEmpty"), for: .normal)
+        bagButton.setImage(model.isOrders ? UIImage(named: "basketDelete") : UIImage(named: "basketEmpty"), for: .normal)
+        likeButton.tintColor = model.isLikes ? UIColor(named: "nftRed") : .white
     }
 
     func startAnimation() {
@@ -145,5 +160,15 @@ final class NFTCatalogCollectionViewCell: UICollectionViewCell {
             $0.height.equalTo(12)
         }
         ratingStackView.addArrangedSubview(imageView)
+    }
+
+    @objc private func bagDidTapped() {
+        guard let model else { return }
+        delegate?.reloadBug(model: model)
+    }
+
+    @objc private func likeDidTapped() {
+        guard let model else { return }
+        delegate?.reloadLike(model: model)
     }
 }

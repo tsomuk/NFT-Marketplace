@@ -40,7 +40,7 @@ extension NetworkClient {
         type: T.Type,
         onResponse: @escaping (Result<T, Error>) -> Void
     ) -> NetworkTask? {
-        send(request: request, type: type, completionQueue: .global(), onResponse: onResponse)
+        send(request: request, type: type, completionQueue: .main, onResponse: onResponse)
     }
 }
 
@@ -131,9 +131,15 @@ struct DefaultNetworkClient: NetworkClient {
             forHTTPHeaderField: "X-Practicum-Mobile-Token"
         )
 
-        if let dto = request.dto,
-           let dtoEncoded = try? encoder.encode(dto) {
-            urlRequest.httpBody = dtoEncoded
+        if let dto = request.dto as? [String: String] {
+            let formDataString = dto.map { key, value in
+                return "\(key)=\(value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+            }.joined(separator: "&")
+            urlRequest.httpBody = formDataString.data(using: .utf8)
+            urlRequest.addValue(
+                "application/x-www-form-urlencoded",
+                forHTTPHeaderField: "Content-Type"
+            )
         }
 
         return urlRequest
