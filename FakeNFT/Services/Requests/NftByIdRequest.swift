@@ -14,4 +14,5 @@ struct NFTRequest: NetworkRequest {
     }
 
     var httpMethod: HttpMethod = .get
+    var dto: Encodable?
 }

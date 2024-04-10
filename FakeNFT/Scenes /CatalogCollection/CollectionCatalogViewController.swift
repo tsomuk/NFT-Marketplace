@@ -13,7 +13,8 @@ final class CatalogCollectionViewController: UIViewController {
     private let servicesAssembly: ServicesAssembly
     private let catalogCollection: CatalogCollection
 
-    private var allCollections: [CatalogCollection] = []
+    private var likesList: [String] = []
+    private var ordersList: [String] = []
 
     private lazy var scrollView: UIScrollView = .init()
 
@@ -101,6 +102,11 @@ final class CatalogCollectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        ProgressHUD.show()
+        loadLikes()
+        loadOrders()
+        ProgressHUD.dismiss()
+
         view.backgroundColor = .systemBackground
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints {
@@ -160,6 +166,40 @@ final class CatalogCollectionViewController: UIViewController {
     @objc private func dismissVC() {
         dismiss(animated: true)
     }
+
+    private func loadLikes() {
+        let request = LikesNftRequest(newData: nil)
+        let networkService = DefaultNetworkClient()
+        networkService.send(request: request, type: Profile.self) { [weak self] result in
+            switch result {
+            case .success(let profile):
+                DispatchQueue.main.async {
+                    self?.likesList = profile.likes
+                }
+            case .failure(let error):
+                assertionFailure(error.localizedDescription)
+                ProgressHUD.showError()
+                return
+            }
+        }
+    }
+
+    private func loadOrders() {
+        let request = OrderRequest(newData: nil)
+        let networkService = DefaultNetworkClient()
+        networkService.send(request: request, type: Orders.self) { [weak self] result in
+            switch result {
+            case .success(let order):
+                DispatchQueue.main.async {
+                    self?.ordersList = order.nfts
+                }
+            case .failure(let error):
+                assertionFailure(error.localizedDescription)
+                ProgressHUD.showError()
+                return
+            }
+        }
+    }
 }
 
 extension CatalogCollectionViewController: UITextViewDelegate {
@@ -203,7 +243,13 @@ extension CatalogCollectionViewController: UICollectionViewDataSource {
             switch result {
             case .success(let nft):
                 DispatchQueue.main.async {
-                    cell.configure(nft: nft)
+                    cell.delegate = self
+                    cell.configure(model: NftCellModel(
+                        nft: nft,
+                        indexPath: indexPath,
+                        isLikes: !self.likesList.filter { nft.id == $0 }.isEmpty,
+                        isOrders: !self.ordersList.filter { nft.id == $0 }.isEmpty
+                    ))
                 }
             case .failure(let error):
                 print(error.localizedDescription)
@@ -211,7 +257,7 @@ extension CatalogCollectionViewController: UICollectionViewDataSource {
         }
         cell.stopAnimation()
     }
- }
+}
 
 extension CatalogCollectionViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(
@@ -222,5 +268,43 @@ extension CatalogCollectionViewController: UICollectionViewDelegateFlowLayout {
         let availableWidth = collectionView.frame.width - 20
         let cellWidth =  availableWidth / 3
         return CGSize(width: cellWidth, height: 192)
+    }
+}
+
+extension CatalogCollectionViewController: CellDelegate {
+    func reloadBug(model: NftCellModel) {
+        model.isOrders ? ordersList.removeAll(where: { $0 == model.id }) : ordersList.append(model.id)
+        let request = OrderRequest(newData: Orders(nfts: ordersList), httpMethod: .put)
+        let networkService = DefaultNetworkClient()
+        networkService.send(request: request, type: Orders.self) { [weak self] result in
+            switch result {
+            case .success(let order):
+                DispatchQueue.main.async {
+                    self?.ordersList = order.nfts
+                }
+            case .failure:
+                ProgressHUD.showError()
+                return
+            }
+        }
+        collectionView.reloadItems(at: [model.indexPath])
+    }
+
+    func reloadLike(model: NftCellModel) {
+        model.isLikes ? self.likesList.removeAll(where: { $0 == model.id }) : self.likesList.append(model.id)
+        let request = LikesNftRequest(newData: Profile(likes: self.likesList), httpMethod: .put)
+        let networkService = DefaultNetworkClient()
+        networkService.send(request: request, type: Profile.self) { [weak self] result in
+            switch result {
+            case .success(let profile):
+                DispatchQueue.main.async {
+                    self?.likesList = profile.likes
+                }
+            case .failure:
+                ProgressHUD.showError()
+                return
+            }
+        }
+        self.collectionView.reloadItems(at: [model.indexPath])
     }
 }
