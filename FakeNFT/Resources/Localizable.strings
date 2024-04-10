@@ -27,4 +27,6 @@
 "ProfileMyNFT.closeAlertOption" = "Закрыть";
 "ProfileMyNFTCell.priceLabel" = "Цена";
 "ProfileMyNFTCell.authorLabel" = "от";
-
+"ProfileMyChosenMFT.emptyLabel" = "У Вас еще нет избранных NFT";
+"ProfileMyChosenMFT.mainTitle" = "Избранные NFT";
+"ProfileMyChosenMFTCell.priceLabel" = "ETH";

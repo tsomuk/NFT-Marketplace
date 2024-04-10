@@ -33,7 +33,7 @@ final class ChosenNFTViewController: UIViewController {
 
     private let emptyNFTLabel: UILabel = {
         let label = UILabel()
-        label.text = "У Вас еще нет избранных NFT"
+        label.text = NSLocalizedString("ProfileMyChosenMFT.emptyLabel", comment: "")
         label.textAlignment = .center
         label.textColor = UIColor(named: "nftBlack")
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -73,7 +73,7 @@ final class ChosenNFTViewController: UIViewController {
 
     private func setUpNavBar(){
         if navigationController != nil {
-            title = "Избранные NFT"
+            title = NSLocalizedString("ProfileMyChosenMFT.mainTitle", comment: "")
             
             let backButton = UIBarButtonItem(
                 image: UIImage(systemName: "chevron.left")?.withConfiguration(UIImage.SymbolConfiguration(

@@ -120,7 +120,7 @@ final class ChosenNFTViewCell: UICollectionViewCell {
 
     func configureMyChosenNFT(with NFT: NFTInfo) {
         myChosenNFTNameLabel.text = NFT.name
-        myChosenNFTPriceLabel.text = "\(NFT.price) ETH"
+        myChosenNFTPriceLabel.text = "\(NFT.price) \(NSLocalizedString("ProfileMyChosenMFTCell.priceLabel", comment: ""))"
         configureRatingStars(with: NFT.rating)
         
         if let imageURL = URL(string: NFT.images.first ?? "") {
