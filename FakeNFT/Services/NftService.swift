@@ -14,21 +14,21 @@ protocol NftService {
 }
 
 final class NftServiceImpl: NftService {
-    
+
     private let networkClient: NetworkClient
     private let storage: NftStorage
-    
+
     init(networkClient: NetworkClient, storage: NftStorage) {
         self.storage = storage
         self.networkClient = networkClient
     }
-    
+
     func loadNft(id: String, completion: @escaping NftCompletion) {
         if let nft = storage.getNft(with: id) {
             completion(.success(nft))
             return
         }
-        
+
         let request = NFTRequest(id: id)
         networkClient.send(request: request, type: Nft.self) { [weak storage] result in
             switch result {
@@ -40,7 +40,7 @@ final class NftServiceImpl: NftService {
             }
         }
     }
-    
+
     func loadOrder(completion: @escaping NftOrderCompletion) {
         networkClient.send(request: NFTOrderRequest(), type: Order.self) { result in
             switch result {
@@ -51,7 +51,7 @@ final class NftServiceImpl: NftService {
             }
         }
     }
-    
+
     func loadCurrencyList(completion: @escaping CurrencyListCompletion) {
         networkClient.send(request: CurrencyListRequest(), type: [Currency].self) { result in
             switch result {
@@ -62,7 +62,7 @@ final class NftServiceImpl: NftService {
             }
         }
     }
-    
+
     func updateOrder(nftsIds: [String], isPaymentDone: Bool, completion: @escaping NftOrderCompletion) {
         let newOrderModel = NewOrderModel(nfts: nftsIds)
         let request = isPaymentDone ? OrderUpdateRequest(newOrder: nil) : OrderUpdateRequest(newOrder: newOrderModel)
@@ -75,9 +75,9 @@ final class NftServiceImpl: NftService {
             }
         }
     }
-    
+
     func paymentConfirmationRequest(currencyId: String, completion: @escaping PaymentCompletion) {
-        
+
         let request = PaymentConfirmationRequest(currencyId: currencyId)
         networkClient.send(request: request, type: PaymentConfirmation.self) { result in
             switch result {

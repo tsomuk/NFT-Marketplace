@@ -25,7 +25,7 @@ protocol NetworkClient {
 }
 
 extension NetworkClient {
-    
+
     @discardableResult
     func send(
         request: NetworkRequest,
@@ -33,7 +33,7 @@ extension NetworkClient {
     ) -> NetworkTask? {
         send(request: request, completionQueue: .main, onResponse: onResponse)
     }
-    
+
     @discardableResult
     func send<T: Decodable>(
         request: NetworkRequest,
@@ -48,7 +48,7 @@ struct DefaultNetworkClient: NetworkClient {
     private let session: URLSession
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
-    
+
     init(session: URLSession = URLSession.shared,
          decoder: JSONDecoder = JSONDecoder(),
          encoder: JSONEncoder = JSONEncoder()) {
@@ -56,7 +56,7 @@ struct DefaultNetworkClient: NetworkClient {
         self.decoder = decoder
         self.encoder = encoder
     }
-    
+
     @discardableResult
     func send(
         request: NetworkRequest,
@@ -69,18 +69,18 @@ struct DefaultNetworkClient: NetworkClient {
             }
         }
         guard let urlRequest = create(request: request) else { return nil }
-        
+
         let task = session.dataTask(with: urlRequest) { data, response, error in
             guard let response = response as? HTTPURLResponse else {
                 onResponse(.failure(NetworkClientError.urlSessionError))
                 return
             }
-            
+
             guard 200 ..< 300 ~= response.statusCode else {
                 onResponse(.failure(NetworkClientError.httpStatusCode(response.statusCode)))
                 return
             }
-            
+
             if let data = data {
                 onResponse(.success(data))
                 return
@@ -92,12 +92,12 @@ struct DefaultNetworkClient: NetworkClient {
                 return
             }
         }
-        
+
         task.resume()
-        
+
         return DefaultNetworkTask(dataTask: task)
     }
-    
+
     @discardableResult
     func send<T: Decodable>(
         request: NetworkRequest,
@@ -114,15 +114,15 @@ struct DefaultNetworkClient: NetworkClient {
             }
         }
     }
-    
+
     // MARK: - Private
-    
+
     private func create(request: NetworkRequest) -> URLRequest? {
         guard let endpoint = request.endpoint else {
             assertionFailure("Empty endpoint")
             return nil
         }
-        
+
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -141,7 +141,7 @@ struct DefaultNetworkClient: NetworkClient {
                 forHTTPHeaderField: "Content-Type"
             )
         }
-        
+
         if let formData = request.dto as? [String: String] {
             // Transform data in x-www-form-urlencoded
             let formDataString = formData.map { key, value in
@@ -149,9 +149,9 @@ struct DefaultNetworkClient: NetworkClient {
             }.joined(separator: "&")
             urlRequest.httpBody = formDataString.data(using: .utf8)
         }
-        
+
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        
+
         return urlRequest
     }
 

@@ -8,6 +8,8 @@
 import Foundation
 
 struct CatalogRequest: NetworkRequest {
+    var headers: [String: String]?
+
     var endpoint: URL? {
         URL(string: "\(RequestConstants.baseURL)/api/v1/collections")
     }
@@ -16,6 +18,8 @@ struct CatalogRequest: NetworkRequest {
 }
 
 struct OrderRequest: NetworkRequest {
+    var headers: [String: String]?
+
     let newData: Orders?
     var dto: Encodable? {
         if let data = newData {
@@ -36,6 +40,8 @@ struct OrderRequest: NetworkRequest {
 }
 
 struct LikesNftRequest: NetworkRequest {
+    var headers: [String: String]?
+
     let newData: Profile?
     var dto: Encodable? {
         if let data = newData {

@@ -8,9 +8,9 @@
 import UIKit
 
 extension UIImage {
-    //images
+    // images
     static var mockNft = UIImage(named: "mockNft") ?? UIImage()
-    //icons
+    // icons
     static var basketDelete = UIImage(named: "basketDelete") ?? UIImage()
     static var basketEmpty = UIImage(named: "basketEmpty") ?? UIImage()
     static var basketFill = UIImage(named: "basketFill") ?? UIImage()
