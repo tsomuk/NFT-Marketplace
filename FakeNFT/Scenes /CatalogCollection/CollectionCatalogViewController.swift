@@ -104,9 +104,12 @@ final class CatalogCollectionViewController: UIViewController {
 
         ProgressHUD.show()
         loadLikes()
-        loadOrders()
         ProgressHUD.dismiss()
 
+        setupLayout()
+    }
+
+    private func setupLayout() {
         view.backgroundColor = .systemBackground
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints {
@@ -147,13 +150,6 @@ final class CatalogCollectionViewController: UIViewController {
             $0.top.equalTo(authorLabel.snp.bottom).offset(4)
         }
 
-        scrollView.addSubview(collectionView)
-        collectionView.snp.makeConstraints {
-            $0.leading.trailing.equalTo(scrollView.safeAreaLayoutGuide).inset(16)
-            $0.bottom.equalTo(scrollView.safeAreaLayoutGuide).offset(20)
-            $0.top.equalTo(descriptionLabel.snp.bottom).offset(24)
-        }
-
         scrollView.addSubview(textView)
         textView.snp.makeConstraints {
             $0.leading.equalTo(authorLabel.snp.trailing)
@@ -161,6 +157,21 @@ final class CatalogCollectionViewController: UIViewController {
             $0.bottom.equalTo(descriptionLabel.snp.top)
             $0.top.equalTo(nameLabel.snp.bottom).offset(8)
         }
+    }
+
+    private func setupLayoutCollection() {
+        scrollView.addSubview(collectionView)
+        collectionView.snp.makeConstraints {
+            $0.leading.trailing.equalTo(scrollView.safeAreaLayoutGuide).inset(16)
+            $0.bottom.equalTo(scrollView.safeAreaLayoutGuide).offset(20)
+            $0.top.equalTo(descriptionLabel.snp.bottom).offset(24)
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        collectionView.reloadData()
     }
 
     @objc private func dismissVC() {
@@ -175,6 +186,7 @@ final class CatalogCollectionViewController: UIViewController {
             case .success(let profile):
                 DispatchQueue.main.async {
                     self?.likesList = profile.likes
+                    self?.loadOrders()
                 }
             case .failure(let error):
                 assertionFailure(error.localizedDescription)
@@ -192,6 +204,7 @@ final class CatalogCollectionViewController: UIViewController {
             case .success(let order):
                 DispatchQueue.main.async {
                     self?.ordersList = order.nfts
+                    self?.setupLayoutCollection()
                 }
             case .failure(let error):
                 assertionFailure(error.localizedDescription)
@@ -239,7 +252,8 @@ extension CatalogCollectionViewController: UICollectionViewDataSource {
         cell.startAnimation()
         servicesAssembly.nftService.loadNft(
             id: catalogCollection.nfts[indexPath.row]
-        ) { (result: Result<Nft, Error>) in
+        ) { [weak self] (result: Result<Nft, Error>) in
+            guard let self else { return }
             switch result {
             case .success(let nft):
                 DispatchQueue.main.async {
