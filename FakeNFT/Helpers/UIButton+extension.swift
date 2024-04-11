@@ -17,7 +17,7 @@ final class NFTButton: UIButton {
         self.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         self.setTitleColor(.nftWhite, for: .normal)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

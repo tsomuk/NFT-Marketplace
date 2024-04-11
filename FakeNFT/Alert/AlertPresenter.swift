@@ -13,14 +13,13 @@ final class AlertPresenter {
         let alert = UIAlertController(title: alertModel.title,
                                       message: alertModel.message,
                                       preferredStyle: .alert)
-        
+
         alert.view.accessibilityIdentifier = "Alert"
-        
+
         let primaryAction = UIAlertAction(title: alertModel.primaryButton.buttonText, style: .default) { _ in
             alertModel.primaryButton.completion?()
         }
         alert.addAction(primaryAction)
-
 
         if let additionalButtons = alertModel.additionalButtons {
             for (index, button) in additionalButtons.enumerated() {
