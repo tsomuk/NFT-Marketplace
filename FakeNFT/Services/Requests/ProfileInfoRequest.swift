@@ -8,6 +8,8 @@
 import Foundation
 
 struct ProfileInfoRequest: NetworkRequest {
+    var dto: Encodable?
+    
     let userId: String
 
     var endpoint: URL? {

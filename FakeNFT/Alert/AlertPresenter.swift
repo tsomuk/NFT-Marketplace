@@ -9,10 +9,10 @@ import Foundation
 import UIKit
 
 final class AlertPresenter {
-    static func showAlert(alertModel: AlertModel, delegate: UIViewController) {
+    static func showAlert(alertModel: AlertModel, delegate: UIViewController, preferredStyle: UIAlertController.Style ) {
         let alert = UIAlertController(title: alertModel.title,
                                       message: alertModel.message,
-                                      preferredStyle: .actionSheet)
+                                      preferredStyle: preferredStyle)
         
         alert.view.accessibilityIdentifier = "Alert"
 

@@ -170,7 +170,7 @@ final class MyNFTViewController: UIViewController {
             ]
         )
 
-        AlertPresenter.showAlert(alertModel: alertModel, delegate: self)
+        AlertPresenter.showAlert(alertModel: alertModel, delegate: self, preferredStyle: .actionSheet)
     }
 
     private func sortMyNFT(by sortOption: SortOptionMyNFT) {

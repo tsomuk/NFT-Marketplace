@@ -424,7 +424,7 @@ final class EditProfileViewController: UIViewController {
             
             DispatchQueue.main.async {
                 switch result {
-                case .success(let updatedProfileInfo):
+                case .success:
                     ProgressHUD.dismiss()
                     self.delegate?.editProfileVCDismissed(self)
                 case .failure(let error):

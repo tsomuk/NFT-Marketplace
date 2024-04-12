@@ -8,6 +8,8 @@
 import Foundation
 
 struct MyNFTInfoRequest: NetworkRequest {
+    var dto: Encodable?
+    
     let userId: String
     let nftId: String
 
