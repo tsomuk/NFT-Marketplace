@@ -242,12 +242,7 @@
 				5A5FD6B62BBC25A90074FC32 /* MyNFTTableViewCell.swift */,
 				5A5FD6AC2BB059840074FC32 /* ChosenNFTViewController.swift */,
 				5A5FD6C52BC511D10074FC32 /* ChosenNFTViewCell.swift */,
-				5A5FD6B02BB6CEEA0074FC32 /* ProfileInfoRequest.swift */,
-				5A5FD6AE2BB6CEC50074FC32 /* ProfileUpdateRequest.swift */,
-				5A5FD6B22BB6CF060074FC32 /* ProfileInfo.swift */,
 				5A5FD6B42BB6ED0A0074FC32 /* ShimmerLoaderView.swift */,
-				5A5FD6BD2BBEEC550074FC32 /* MyNFTInfoRequest.swift */,
-				5A5FD6C12BBEECD90074FC32 /* NFTInfo.swift */,
 				5A5FD6BF2BBEEC7C0074FC32 /* SortOptionMyNFT.swift */,
 				5A5FD6C32BC511830074FC32 /* GeometricParams.swift */,
 			);
@@ -399,6 +394,8 @@
 		3F6806D829CC979D00B4F915 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				5A5FD6C12BBEECD90074FC32 /* NFTInfo.swift */,
+				5A5FD6B22BB6CF060074FC32 /* ProfileInfo.swift */,
 				0CFCB7412A78013E0009A829 /* Nft.swift */,
 			);
 			path = Network;
@@ -407,6 +404,9 @@
 		3FC8C38F29D245250081F015 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
+				5A5FD6B02BB6CEEA0074FC32 /* ProfileInfoRequest.swift */,
+				5A5FD6AE2BB6CEC50074FC32 /* ProfileUpdateRequest.swift */,
+				5A5FD6BD2BBEEC550074FC32 /* MyNFTInfoRequest.swift */,
 				3FC8C39029D2453B0081F015 /* ExampleRequest.swift */,
 				0C79EE602A76DCD600EE90EA /* NftByIdRequest.swift */,
 				0C79EE622A76DD1900EE90EA /* RequestConstants.swift */,

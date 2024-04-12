@@ -104,7 +104,7 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(named: "nftWhite")
         addNCViews()
         setUpView()
         setUpAnimation()
@@ -284,6 +284,7 @@ extension ProfileViewController: UITableViewDataSource {
 
         cell.tintColor = UIColor(named: "nftBlack")
         cell.selectionStyle = .none
+        cell.backgroundColor = UIColor(named: "nftWhite")
 
         let myNFTTitle = NSLocalizedString("ProfileMain.table.myNFT", comment: "")
         let myChosenNFTTitle = NSLocalizedString("ProfileMain.table.myChosenNFT", comment: "")

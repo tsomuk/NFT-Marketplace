@@ -63,7 +63,7 @@ final class ChosenNFTViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(named: "nftWhite")
         setUpNavBar()
         setUpView()
         fetchMyChosenNFTInfo()
@@ -93,7 +93,7 @@ final class ChosenNFTViewController: UIViewController {
         myChosenNFTCollView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(20)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(emptyNFTLabel.snp.top).offset(-20)
+            make.bottom.equalToSuperview()
         }
         emptyNFTLabel.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
@@ -107,6 +107,7 @@ final class ChosenNFTViewController: UIViewController {
 
         myChosenNFTCollView.isHidden = true
         emptyNFTLabel.isHidden = true
+        myChosenNFTCollView.backgroundColor = UIColor(named: "nftWhite")
     }
 
     private func fetchMyChosenNFTInfo() {
@@ -131,11 +132,10 @@ final class ChosenNFTViewController: UIViewController {
                         self?.myChosenNFTs.append(myNFTInfo)
                         self?.myChosenNFTCollView.reloadData()
                         self?.updateUI()
-                        ProgressHUD.dismiss()
                     case .failure(let error):
                         print("Failed to fetch profile info for NFT with ID \(likesId): \(error.localizedDescription)")
-                        ProgressHUD.dismiss()
                     }
+                    ProgressHUD.dismiss()
                 }
             }
         }
@@ -279,11 +279,10 @@ extension ChosenNFTViewController: MyChosenNFTCellDelegate {
                 case .success(_):
                     self?.updateUI()
                     self?.myChosenNFTCollView.reloadData()
-                    ProgressHUD.dismiss()
                 case .failure(let error):
                     print("Failed to update profile:", error.localizedDescription)
-                    ProgressHUD.dismiss()
                 }
+                ProgressHUD.dismiss()
             }
         }
     }

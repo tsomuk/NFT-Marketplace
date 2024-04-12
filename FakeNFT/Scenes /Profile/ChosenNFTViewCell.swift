@@ -92,6 +92,7 @@ final class ChosenNFTViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        contentView.backgroundColor = UIColor(named: "nftWhite")
         setupViews()
     }
 
@@ -99,9 +100,24 @@ final class ChosenNFTViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: -  Public Methods
+
+    func configureMyChosenNFT(with NFT: NFTInfo) {
+        myChosenNFTNameLabel.text = NFT.name
+        myChosenNFTPriceLabel.text = "\(NFT.price) \(NSLocalizedString("ProfileMyChosenMFTCell.priceLabel", comment: ""))"
+        configureRatingStars(with: NFT.rating)
+        
+        if let imageURL = URL(string: NFT.images.first ?? "") {
+            myChosenNFTImage.kf.setImage(with: imageURL)
+            myChosenNFTImage.layer.cornerRadius = 12
+            myChosenNFTImage.layer.masksToBounds = true
+         }
+        nftId = NFT.id
+    }
+
     // MARK: -  Private Methods
 
-    func setupViews() {
+    private func setupViews() {
         contentView.addSubview(myChosenNFTStackMain)
         contentView.addSubview(likeButton)
         
@@ -116,19 +132,6 @@ final class ChosenNFTViewCell: UICollectionViewCell {
         myChosenNFTStackMain.snp.makeConstraints { make in
             make.top.leading.bottom.trailing.equalTo(contentView)
         }
-    }
-
-    func configureMyChosenNFT(with NFT: NFTInfo) {
-        myChosenNFTNameLabel.text = NFT.name
-        myChosenNFTPriceLabel.text = "\(NFT.price) \(NSLocalizedString("ProfileMyChosenMFTCell.priceLabel", comment: ""))"
-        configureRatingStars(with: NFT.rating)
-        
-        if let imageURL = URL(string: NFT.images.first ?? "") {
-            myChosenNFTImage.kf.setImage(with: imageURL)
-            myChosenNFTImage.layer.cornerRadius = 12
-            myChosenNFTImage.layer.masksToBounds = true
-         }
-        nftId = NFT.id
     }
 
     private func configureRatingStars(with rating: Int) {
