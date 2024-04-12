@@ -104,7 +104,7 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(named: "nftWhite")
         addNCViews()
         setUpView()
         setUpAnimation()
@@ -240,7 +240,9 @@ final class ProfileViewController: UIViewController {
 
     @objc private func profileSiteButtonTapped() {
         if let navigationController = self.navigationController {
-            let profileSiteVC = ProfileSiteViewController()
+            let profileSiteVC = ProfileSiteViewController(
+                servicesAssembly: servicesAssembly,
+                profileInfo: profileInfo)
             navigationController.pushViewController(profileSiteVC, animated: true)
         }
         navBarBackButton()
@@ -282,6 +284,7 @@ extension ProfileViewController: UITableViewDataSource {
 
         cell.tintColor = UIColor(named: "nftBlack")
         cell.selectionStyle = .none
+        cell.backgroundColor = UIColor(named: "nftWhite")
 
         let myNFTTitle = NSLocalizedString("ProfileMain.table.myNFT", comment: "")
         let myChosenNFTTitle = NSLocalizedString("ProfileMain.table.myChosenNFT", comment: "")
@@ -340,11 +343,12 @@ extension ProfileViewController: UITableViewDelegate {
     }
 
     private func showChosenScreen() {
-        if let navigationController = self.navigationController {
-            let chosenNFTVC = ChosenNFTViewController()
-            navigationController.pushViewController(chosenNFTVC, animated: true)
-            navBarBackButton()
-        }
+        guard let navigationController = self.navigationController else { return }
+        let chosenNFTVC = ChosenNFTViewController(
+            servicesAssembly: servicesAssembly,
+            profileInfo: profileInfo)
+        chosenNFTVC.delegate = self
+        navigationController.pushViewController(chosenNFTVC, animated: true)
     }
 
     private func navBarBackButton() {
@@ -354,5 +358,19 @@ extension ProfileViewController: UITableViewDelegate {
             target: nil,
             action: nil)
         navigationItem.backBarButtonItem?.tintColor = UIColor(named: "nftBlack")
+    }
+
+    @objc private func backToProfileButtonTapped() {
+        fetchProfileInfo()
+        dismiss(animated: true, completion: nil)
+    }
+}
+
+// MARK: - MyChosenNFTDelegate - dismiss ChosenNFTVC
+
+extension ProfileViewController: MyChosenNFTDelegate {
+    func chosenNFTViewControllerDidDismiss(_ vc: ChosenNFTViewController) {
+        fetchProfileInfo()
+        navigationController?.popViewController(animated: true)
     }
 }

@@ -26,7 +26,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         button.setImage(
             UIImage(systemName: "heart.fill"),
             for: .normal)
-        button.tintColor = UIColor(named: "nftLightGray")
+        button.tintColor = UIColor(hexString: "F7F7F8")
         button.setTitleColor(.clear, for: .normal)
         button.addTarget(
             self,
@@ -130,6 +130,8 @@ final class MyNFTTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        contentView.backgroundColor = UIColor(named: "nftWhite")
         setUpView()
         }
 

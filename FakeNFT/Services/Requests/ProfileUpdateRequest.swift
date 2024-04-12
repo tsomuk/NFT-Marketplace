@@ -21,12 +21,20 @@ struct ProfileUpdateRequest: NetworkRequest {
     }
     var dto: Encodable? {
         // Form data in x-www-form-urlencoded
-        let formData: [String: String] = [
+        var formData: [String: String] = [
             "name": newProfileData.name,
             "description": newProfileData.description,
             "website": newProfileData.website,
             "avatar": newProfileData.avatar
         ]
+
+        if newProfileData.likes.isEmpty {
+            formData["likes"] = "null"
+        } else {
+            let likesString = newProfileData.likes.joined(separator: ",")
+            formData["likes"] = likesString
+        }
+
         return formData
     }
 }

@@ -50,7 +50,7 @@ final class MyNFTViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(named: "nftWhite")
         setUpNC()
         setUpView()
         fetchMyNFTInfo()
@@ -91,6 +91,7 @@ final class MyNFTViewController: UIViewController {
         myNFTTableView.dataSource = self
         myNFTTableView.delegate = self
         myNFTTableView.register(MyNFTTableViewCell.self, forCellReuseIdentifier: "myNFTCell")
+        myNFTTableView.backgroundColor = UIColor(named: "nftWhite")
 
         myNFTTableView.isHidden = true
         emptyNFTLabel.isHidden = true
