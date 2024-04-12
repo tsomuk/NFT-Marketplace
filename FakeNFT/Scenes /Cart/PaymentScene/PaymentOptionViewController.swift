@@ -159,7 +159,7 @@ final class PaymentOptionViewController: UIViewController {
             additionalButtons: [cancelButton]
         )
 
-        AlertPresenter.showAlert(alertModel: alertModel, delegate: self)
+        AlertPresenter.showAlert(alertModel: alertModel, delegate: self, preferredStyle: .alert)
     }
 
     // MARK: - Network

@@ -1,6 +1,7 @@
 import Foundation
 
 struct NFTRequest: NetworkRequest {
+
     var httpMethod: HttpMethod = .get
 
     var dto: (any Encodable)?

@@ -27,3 +27,27 @@
 "Cart.paymentFailed" = "Не удалось произвести оплату";
 "Cart.goToCatalog" = "Вернуться в каталог";
 "Cart.paymentPassed" = "Успех! Оплата прошла, поздравляем с покупкой!";
+
+//Profile
+"ProfileMain.table.myNFT" = "Мои NFT";
+"ProfileMain.table.myChosenNFT" = "Избранные NFT";
+"ProfileMain.table.DevInfo" = "О разработчике";
+"ProfileEdit.changeImageTitle" = "Сменить\nфото";
+"ProfileEdit.nameTitle" = "Имя";
+"ProfileEdit.nameTitlePlaceholfer" = "Ваше имя";
+"ProfileEdit.bioTitle" = "Описание";
+"ProfileEdit.siteTitle" = "Сайт";
+"ProfileEdit.siteTitlePlaceholder" = "Ваш сайт";
+"ProfileEdit.imageUpdateTitle" = "Загрузить изображение";
+"ProfileMyNFT.emptyNFTLabel" = "У Вас еще нет NFT";
+"ProfileMyNFT.navbarTitle" = "Мои NFT";
+"ProfileMyNFT.sortAlertTitle" = "Сортировка";
+"ProfileMyNFT.priceAlertOption" = "По цене";
+"ProfileMyNFT.ratingAlertOption" = "По рейтингу";
+"ProfileMyNFT.nameAlertOption" = "По названию";
+"ProfileMyNFT.closeAlertOption" = "Закрыть";
+"ProfileMyNFTCell.priceLabel" = "Цена";
+"ProfileMyNFTCell.authorLabel" = "от";
+"ProfileMyChosenMFT.emptyLabel" = "У Вас еще нет избранных NFT";
+"ProfileMyChosenMFT.mainTitle" = "Избранные NFT";
+"ProfileMyChosenMFTCell.priceLabel" = "ETH";

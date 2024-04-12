@@ -27,3 +27,27 @@
 "Cart.paymentFailed" = "Payment failed";
 "Cart.goToCatalog" = "Go to catalog";
 "Cart.paymentPassed" = "Success! Payment passed, congratulations on purchase!";
+
+//Profile
+"ProfileMain.table.myNFT" = "My NFT";
+"ProfileMain.table.myChosenNFT" = "Chosen NFT";
+"ProfileMain.table.DevInfo" = "About dev";
+"ProfileEdit.changeImageTitle" = "Change\nphoto";
+"ProfileEdit.nameTitle" = "Name";
+"ProfileEdit.nameTitlePlaceholfer" = "Your name";
+"ProfileEdit.bioTitle" = "Descpiption";
+"ProfileEdit.siteTitle" = "Website";
+"ProfileEdit.siteTitlePlaceholder" = "Your website";
+"ProfileEdit.imageUpdateTitle" = "Download photo";
+"ProfileMyNFT.emptyNFTLabel" = "You don't have any NFT yet";
+"ProfileMyNFT.navbarTitle" = "My NFT";
+"ProfileMyNFT.sortAlertTitle" = "Sorting";
+"ProfileMyNFT.priceAlertOption" = "By price";
+"ProfileMyNFT.ratingAlertOption" = "By rating";
+"ProfileMyNFT.nameAlertOption" = "By name";
+"ProfileMyNFT.closeAlertOption" = "Close";
+"ProfileMyNFTCell.priceLabel" = "Price";
+"ProfileMyNFTCell.authorLabel" = "from";
+"ProfileMyChosenMFT.emptyLabel" = "You don't have any chosen NFT yet";
+"ProfileMyChosenMFT.mainTitle" = "Chosen NFT";
+"ProfileMyChosenMFTCell.priceLabel" = "ETH";

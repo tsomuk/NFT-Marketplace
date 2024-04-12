@@ -43,7 +43,10 @@ final class TabBarController: UITabBarController {
     }
 
     private func configureTabs() {
-        let profileController = ProfileViewController()
+        let profileController = ProfileViewController(
+            servicesAssembly: servicesAssembly
+        )
+        let profileNC = UINavigationController(rootViewController: profileController)
         let catalogNavigationController = UINavigationController()
         catalogNavigationController.setViewControllers([CatalogViewController(
             servicesAssembly: servicesAssembly
@@ -55,6 +58,7 @@ final class TabBarController: UITabBarController {
         catalogNavigationController.tabBarItem = catalogTabBarItem
         cartController.tabBarItem = cartTabBarItem
         statisticsController.tabBarItem = statisticsTabBarItem
-        viewControllers = [profileController, catalogNavigationController, cardNavigationController, statisticsController]
+        tabBar.unselectedItemTintColor = UIColor(named: "nftBlack")
+        viewControllers = [profileNC, catalogNavigationController, cardNavigationController, statisticsController]
     }
 }

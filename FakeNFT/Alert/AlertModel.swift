@@ -2,7 +2,7 @@
 //  AlertModel.swift
 //  FakeNFT
 //
-//  Created by Nikita Tsomuk on 07.04.2024.
+//  Created by Анастасия on 02.04.2024.
 //
 
 import Foundation

@@ -26,6 +26,10 @@ final class CatalogViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+            tabBarController?.tabBar.isHidden = false
+        }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
