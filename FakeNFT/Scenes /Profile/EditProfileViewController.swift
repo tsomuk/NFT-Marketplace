@@ -208,7 +208,7 @@ final class EditProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .nftWhite
         setUpView()
         setUpAnimation()
         fetchProfileInfoForEdit()

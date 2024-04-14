@@ -43,6 +43,7 @@ final class CatalogCollectionViewController: UIViewController {
         let attributedString = NSMutableAttributedString(string: catalogCollection.author)
         let url = URL(string: RequestConstants.ypURL)!
         attributedString.setAttributes([.link: url], range: NSRange(location: 0, length: attributedString.length))
+        text.backgroundColor = .nftWhite
         text.isScrollEnabled = false
         text.attributedText = attributedString
         text.isUserInteractionEnabled = true
@@ -54,7 +55,7 @@ final class CatalogCollectionViewController: UIViewController {
 
     private lazy var authorLabel: UILabel = {
         let label = UILabel()
-        label.text = "Автор коллекции:"
+        label.text = "Catalog.autor"~
         label.numberOfLines = 0
         label.font = .systemFont(ofSize: 13, weight: .regular)
         return label
@@ -80,7 +81,7 @@ final class CatalogCollectionViewController: UIViewController {
             frame: .zero,
             collectionViewLayout: UICollectionViewFlowLayout()
         )
-        collectionView.backgroundColor = .background
+        collectionView.backgroundColor = .nftWhite
         collectionView.allowsMultipleSelection = true
         collectionView.isScrollEnabled = false
         collectionView.register(NFTCatalogCollectionViewCell.self, forCellWithReuseIdentifier: "NFTCatalogCell")
@@ -110,7 +111,7 @@ final class CatalogCollectionViewController: UIViewController {
     }
 
     private func setupLayout() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .nftWhite
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints {
             $0.edges.equalToSuperview()

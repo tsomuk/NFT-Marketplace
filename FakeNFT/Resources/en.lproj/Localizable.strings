@@ -51,3 +51,11 @@
 "ProfileMyChosenMFT.emptyLabel" = "You don't have any chosen NFT yet";
 "ProfileMyChosenMFT.mainTitle" = "Chosen NFT";
 "ProfileMyChosenMFTCell.priceLabel" = "ETH";
+
+// Catalog
+
+"Catalog.sort" = "Sort by";
+"Catalog.sortTitle" = "Title";
+"Catalog.sortNftAmount" = "Number of NFTs";
+"Catalog.sortClose" = "Close";
+"Catalog.autor" = "Autor:";

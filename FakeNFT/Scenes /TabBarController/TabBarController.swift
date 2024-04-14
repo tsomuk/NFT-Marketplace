@@ -22,11 +22,11 @@ final class TabBarController: UITabBarController {
         tag: 2
     )
 
-    private let statisticsTabBarItem = UITabBarItem(
-        title: NSLocalizedString("Tab.statistics", comment: ""),
-        image: UIImage(systemName: "flag.2.crossed.fill"),
-        tag: 3
-    )
+//    private let statisticsTabBarItem = UITabBarItem(
+//        title: NSLocalizedString("Tab.statistics", comment: ""),
+//        image: UIImage(systemName: "flag.2.crossed.fill"),
+//        tag: 3
+//    )
 
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
@@ -53,12 +53,12 @@ final class TabBarController: UITabBarController {
         )], animated: false)
         let cartController = CartViewController(servicesAssembly: servicesAssembly)
         let cardNavigationController = UINavigationController(rootViewController: cartController)
-        let statisticsController = StatisticsViewController()
+//        let statisticsController = StatisticsViewController()
         profileController.tabBarItem = profileTabBarItem
         catalogNavigationController.tabBarItem = catalogTabBarItem
         cartController.tabBarItem = cartTabBarItem
-        statisticsController.tabBarItem = statisticsTabBarItem
+//        statisticsController.tabBarItem = statisticsTabBarItem
         tabBar.unselectedItemTintColor = UIColor(named: "nftBlack")
-        viewControllers = [profileNC, catalogNavigationController, cardNavigationController, statisticsController]
+        viewControllers = [profileNC, catalogNavigationController, cardNavigationController]
     }
 }
