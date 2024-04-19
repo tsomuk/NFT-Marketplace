@@ -32,6 +32,7 @@ final class NFTCatalogCollectionViewCell: UICollectionViewCell {
 
     private lazy var bagButton: UIButton = {
         let button = UIButton()
+        button.tintColor = .nftBlack
         button.addTarget(self, action: #selector(bagDidTapped), for: .touchUpInside)
         return button
     }()

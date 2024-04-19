@@ -278,6 +278,7 @@
 				0CFCB7482A7808900009A829 /* CatalogViewController.swift */,
 				2F688EBD2BB485AE00E2A97F /* CatalogRequest.swift */,
 				2F688EBB2BB45EB200E2A97F /* CatalogTableViewCell.swift */,
+				2F688EC32BC0EB9000E2A97F /* CatalogCollection */,
 			);
 			path = Catalog;
 			sourceTree = "<group>";
@@ -463,7 +464,6 @@
 				0CF2C2D92A783C1600FDC837 /* Common */,
 				0C79EE642A76DDCF00EE90EA /* NftDetails */,
 				3F6806C829CBBC8100B4F915 /* ProductDetails */,
-				2F688EC32BC0EB9000E2A97F /* CatalogCollection */,
 			);
 			path = "Scenes ";
 			sourceTree = "<group>";

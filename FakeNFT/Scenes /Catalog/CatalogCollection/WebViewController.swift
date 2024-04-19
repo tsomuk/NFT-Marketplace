@@ -34,7 +34,7 @@ final class WebViewController: UIViewController {
 
         guard let urlRequest = URL(string: url) else { return }
         webView.load(URLRequest(url: urlRequest))
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .nftWhite
 
         view.addSubview(backButton)
         backButton.snp.makeConstraints {

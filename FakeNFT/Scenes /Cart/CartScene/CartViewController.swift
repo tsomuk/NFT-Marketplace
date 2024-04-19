@@ -114,8 +114,8 @@ final class CartViewController: UIViewController {
 
     private func setupNavBar() {
         let sortButton = UIBarButtonItem(image: .sort, style: .plain, target: self, action: #selector(sortButtonTapped))
-        sortButton.tintColor = .nftBlack
         navigationItem.rightBarButtonItem = sortButton
+        navigationItem.rightBarButtonItem?.tintColor = .nftBlack
     }
 
     // MARK: - Network
