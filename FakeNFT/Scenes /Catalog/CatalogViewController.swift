@@ -10,6 +10,7 @@ final class CatalogViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.showsVerticalScrollIndicator = false
+        tableView.backgroundColor = .nftWhite
         tableView.register(CatalogTableViewCell.self, forCellReuseIdentifier: "CatalogCell")
         tableView.separatorStyle = .none
         tableView.dataSource = self
@@ -36,7 +37,7 @@ final class CatalogViewController: UIViewController {
         setupBar()
         loadCollection()
 
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .nftWhite
 
         view.addSubview(tableView)
         tableView.snp.makeConstraints {
@@ -68,31 +69,33 @@ final class CatalogViewController: UIViewController {
 
     private func setupBar() {
         let addButtonImage = UIImage(named: "sort")
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: addButtonImage,
             style: .plain,
             target: self,
             action: #selector(sortedCatalog)
         )
+        navigationItem.rightBarButtonItem?.tintColor = .nftBlack
     }
 
     @objc private func sortedCatalog() {
         let alert = UIAlertController(
-            title: "Сортировка",
+            title: "Catalog.sort"~,
             message: nil,
             preferredStyle: .actionSheet)
-        let nameSortedAction = UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
+        let nameSortedAction = UIAlertAction(title: "Catalog.sortTitle"~, style: .default) { [weak self] _ in
             self?.sortedNameCollections()
             self?.tableView.reloadData()
         }
         alert.addAction(nameSortedAction)
 
-        let countNftSortedAction = UIAlertAction(title: "По количеству NFT", style: .default) { [weak self] _ in
+        let countNftSortedAction = UIAlertAction(title: "Catalog.sortNftAmount"~, style: .default) { [weak self] _ in
             self?.sortedCountNftCollections()
             self?.tableView.reloadData()
         }
         alert.addAction(countNftSortedAction)
-        let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel)
+        let cancelAction = UIAlertAction(title: "Catalog.sortClose"~, style: .cancel)
         alert.addAction(cancelAction)
         present(alert, animated: true, completion: nil)
     }
@@ -112,15 +115,13 @@ extension CatalogViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: "CatalogCell", for: indexPath
-        ) as? CatalogTableViewCell,
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CatalogCell", for: indexPath) as? CatalogTableViewCell,
         let urlString = allCollections[indexPath.row].cover.addingPercentEncoding(
             withAllowedCharacters: .urlQueryAllowed
         ) else {
             return UITableViewCell()
         }
-
+        cell.backgroundColor = .nftWhite
         cell.configure(
             imageURL: URL(string: urlString),
             label: "\(allCollections[indexPath.row].name) (\(allCollections[indexPath.row].nfts.count))"

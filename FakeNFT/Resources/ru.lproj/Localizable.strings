@@ -51,3 +51,11 @@
 "ProfileMyChosenMFT.emptyLabel" = "У Вас еще нет избранных NFT";
 "ProfileMyChosenMFT.mainTitle" = "Избранные NFT";
 "ProfileMyChosenMFTCell.priceLabel" = "ETH";
+
+// Catalog
+
+"Catalog.sort" = "Сортировка";
+"Catalog.sortTitle" = "По названию";
+"Catalog.sortNftAmount" = "По количеству NFT";
+"Catalog.sortClose" = "Закрыть";
+"Catalog.autor" = "Автор коллекции:";
